@@ -1,0 +1,455 @@
+.cell {
+    padding-right: .625rem;
+    padding-left: .625rem;
+    padding-top: .625rem;
+    padding-bottom: .625rem
+}
+
+#selects select {
+    margin-bottom: 0px;
+}
+
+#abf-block {
+    border: solid;
+    border-width: 2px;
+    border-radius: 4px;
+    margin: 6px;
+    border-color: rgb(180, 180, 180);
+}
+
+@media screen and (min-width: 850px) {
+    #bulb_result .large-columns-5>.col {
+        flex-basis: 20%;
+        max-width: 20%;
+    }
+}
+
+@media screen and (min-width: 550px){
+    #bulb_result .medium-columns-3>.col {
+        flex-basis: 33.3333333333%;
+        max-width: 33.3333333333%;
+    }
+}
+
+#bulb_result .small-columns-2>.col {
+    flex-basis: 50%;
+    max-width: 50%;
+}
+
+@media only screen and (min-width: 768px) {    
+    #bulb_result .large-columns-5>.col {
+        flex-basis: 20%;
+        max-width: 20%;
+    }
+    #abf-block {
+        padding: 10px;
+    }
+
+    #bulb-size-list-content .slide-box {
+        padding-left: 24px;
+    }
+
+    .woocommerce .large-columns-2 {
+        max-width: 48%;
+    }
+}
+
+#bulb-size-list-content .woocommerce .products {
+    display: flex;
+    justify-content: flex-start;
+}
+
+
+
+#bulb_result .poduct {
+    padding: 8px;
+}
+
+.price-wrapper .price {
+    display: inline-flex;
+}
+
+#bulb_result .title-wrapper .category {
+    display: none;
+}
+
+.p.name.product-title a {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.abf.name.product-title.woocommerce-loop-product__title,
+a.woocommerce-LoopProduct-link.woocommerce-loop-product__link {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.add-to-cart-button a {
+    padding: 0px 6px;
+    margin-right: 0px;
+    background-color: #F4691B;
+    display: -webkit-box;
+    font-size: 10px;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.star-rating.star-rating--inline {
+    display: none;
+}
+
+#selects li {
+    list-style: none;
+}
+
+#selects .chosen-container .chosen-results li {
+    padding: 5px;
+}
+
+#selects .chosen-single {
+    padding: 6px 20px 0 6px;
+    height: 40px;
+    border: 1px solid #fff;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.8);
+    background: white;
+    border-radius: 0px;
+    color: #000;
+    font-size: 1.5em;
+}
+
+#selects .chosen-container-single .chosen-single div {
+    position: absolute;
+    top: 10px;
+    right: 6px;
+    display: block;
+    width: 16px;
+    height: 100%;
+}
+
+#selects .chosen-container-active.chosen-with-drop .chosen-single div b {
+    background-position: -14px 2px;
+}
+
+#selects .chosen-disabled {
+    opacity: 1.0 !important;
+    cursor: default;
+}
+
+#selects .chosen-disabled .chosen-single {
+    color: #ccc;
+}
+
+#select-boxes {
+    padding-top: 0;
+    padding-bottom: 0px;
+}
+
+#select-boxes h2 {
+    font-size: 1.25em;
+    font-family: 'centrale_sansbold';
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+    color: white;
+}
+
+.z-index-100 {
+    z-index: 100;
+}
+
+.slide-box {
+    display: -webkit-box;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+.slide-box::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.slide-box::-webkit-scrollbar {
+    background-color: transparent;
+}
+
+.slide-item {
+    text-align: center;
+}
+
+.yt-video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    /* border-radius: 16px; */
+    border-width: 1px;
+    border-color: black;
+    background: black;
+    /* box-shadow: 1px 1px 10px grey; */
+}
+
+.yt-video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.yt-slide-box {
+    overflow: scroll;
+    display: -webkit-box;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media only screen and (min-width: 1000px) {
+    .yt-slide-item {
+        padding: 16px;
+        width: 40%;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .yt-slide-item {
+        padding: 16px;
+        width: 90%;
+    }
+
+    .yt-slide-box::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;
+    }
+}
+
+.price-wrapper.child {
+    height: auto !important;
+}
+
+p.name.product-title.woocommerce-loop-product__title {
+    height: auto !important;
+}
+
+.add-to-cart-button {
+    height: auto !important;
+}
+
+nav#nav-below {
+    display: none;
+}
+
+div#reviews {
+    display: none;
+}
+
+.product-quick-view-container .single_add_to_cart_button.button.alt {
+    font-size: 12px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.quick-view-label {
+    font-size: 12px;
+    text-align: center;
+    background: #ffa5008f;
+    color: darkred;
+    display: block;
+    width: 100%;
+    padding: 0 !important;
+    margin-bottom: -1px;
+    white-space: nowrap;
+}
+
+.comment-text.flex-col.flex-grow {
+    margin: 0 !important;
+}
+
+.review.even.thread-even {
+    margin: 0 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* The Modal (background) */
+
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+    z-index: 1000;
+}
+
+@media only screen and (min-width: 1000px) {
+    .modal {
+        padding-top: 100px;
+    }
+
+    .woocommerce.columns-5 {
+        /* max-width: 41%; */
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .modal {
+        padding: 120px 20px;
+    }
+}
+
+.modal::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+
+/* Modal Content */
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0px;
+    border: 1px solid #888;
+}
+
+#modal-content-product {
+    margin-bottom: 0px;
+}
+
+
+/* The Close Button */
+
+.close {
+    color: #fc4343;
+    font-size: 42px;
+    font-weight: bold;
+    position: fixed;
+    z-index: 1001;
+    right: 6px;
+    top: 0px;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.product-quick-view-container .single_add_to_cart_button.button.alt {
+    height: 40px;
+}
+
+.modal form.cart {
+    display: none;
+}
+
+.accordion-title {
+    margin-bottom: 0px;
+    padding: 0.5em;
+}
+
+.accordion-title.accordion-title-no-inner {
+    color: grey;
+}
+
+.accordion .toggle {
+    position: initial;
+}
+
+.accordion-inner {
+    padding: 0;
+    margin-top: 10px;
+}
+
+.abfinder-bulb-size {
+    float: right;
+    margin: 10px 0;
+}
+
+.accordion-inner .slide-box .product {
+    padding-bottom: 10px;
+}
+
+#abf-block .row {
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+}
+
+#bulb_result .toggle {
+    border: none;
+    background: transparent;
+}
+
+@media screen and (min-width: 550px) {
+    .medium-3 {
+        flex-basis: 25%;
+        max-width: 25%;
+    }
+}
+
+@media screen and (min-width: 550px) {
+    .medium-3 {
+        flex-basis: 25%;
+        max-width: 25%;
+    }
+}
+
+.toggle:focus-visible {
+    outline: none !important;
+}
+
+.accordion .accordion-title-with-inner {
+    background: white !important;
+}
+
+.accordion .accordion-title-no-inner {
+    background: rgba(0, 0, 0, .03) !important;
+}
+
+.accordion .accordion-title-with-inner .toggle {
+    transform: rotate(90deg);
+}
+
+.accordion .accordion-title-with-inner.active .toggle {
+    transform: rotate(0deg);
+}
+
+.icon-arrow-right:before {
+    content: " ";
+    padding: 10px;
+    background: url(/wp-content/plugins/auto-bulb-finder/assets/images/arrow-right.svg) center center no-repeat;
+    width: 10px;
+}
+
+.icon-rotate {
+    animation: rotate 1.5s linear infinite;
+}
+
+@keyframes rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}

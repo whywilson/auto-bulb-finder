@@ -1,0 +1,33 @@
+.fits-on-textarea {
+    line-height: 1rem;
+    width: 25em;
+    min-height: 200px;
+}
+
+.fits_on_item {
+    display: inline-block;
+    background: #fefefe;
+    padding: 2px 4px;
+    margin: 4px 4px 0 0;
+    border-radius: 4px;
+    box-shadow: 1px 1px 2px lightgrey;
+    font-size: 0.8em;
+}
+
+[name="abfinder_vehicle_bulb_size"]::-webkit-input-placeholder {
+    font-size: 0.9em;
+    color: #dbdbdb;
+}
+
+.abfinder-bulb-size {
+    display: block;
+    font-size: 0.9em;
+    line-height: 1.2em;
+    background: white;
+    padding: 2px 4px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    box-shadow: 1px 1px 4px 1px lightgrey;
+    width: fit-content;
+    white-space: nowrap;
+}
