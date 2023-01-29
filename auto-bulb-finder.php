@@ -3,7 +3,7 @@
 Plugin Name: Auto Bulb Finder for WP & WC
 Plugin URI:  https://auto.mtoolstec.com
 Description: Year/Make/Model/BodyType/Qualifer automoive bulb size querying system for vehicles from 1960 to 2022. Online database or custom vehicle list. Add to any page or content by a shortcode <code>[abf]</code>.
-Version:     2.4.1
+Version:     2.4.2
 Author:      MTools Tec
 Author URI:  https://shop.mtoolstec.com/about-us/
 License:     GPL
@@ -100,7 +100,7 @@ function auto_bulb_finder_config_html()
     require dirname(__FILE__) . '/templates/admin/settings/class-abfinder-setting.php';
 }
 
-function add_jquery()
+function abf_add_jquery()
 {
     if (!is_admin()) {
         wp_enqueue_script('jquery');
@@ -111,11 +111,11 @@ function add_jquery()
         wp_register_style('abf-settings-style', plugins_url('assets/css/style-setting.css', __FILE__));
     }
 }
-add_action('init', 'add_jquery');
+add_action('init', 'abf_add_jquery');
 
-add_filter('autoptimize_filter_js_exclude', 'jquery_toggle');
+add_filter('autoptimize_filter_js_exclude', 'abf_jquery_toggle');
 
-function jquery_toggle($in)
+function abf_jquery_toggle($in)
 {
     if (is_front_page() || strpos($_SERVER['REQUEST_URI'], 'test-page') !== false) {
         return $in . ', js/jquery/jquery.js';
@@ -124,18 +124,17 @@ function jquery_toggle($in)
     }
 }
 
-function woo_block_product_grid_item_html($_product)
+function abf_woo_block_product_grid_item_html($_product)
 {
     global $product, $post;
     $product = $_product;
     $post    = get_post($_product->get_id());
-    // $html    = _wc_get_template_part_str('content', 'product');
-    $html    = _wc_get_template_part_str('content-product-simple');
+    $html    = abf_wc_get_template_part_str('content-product-simple');
     $html = str_replace('a href=', 'a target="_blank" href=', $html);
     return $html;
 }
 
-function _wc_get_template_part_str($template_name, $part_name = null)
+function abf_wc_get_template_part_str($template_name, $part_name = null)
 {
     ob_start();
     wc_get_template_part($template_name, $part_name);
@@ -223,50 +222,6 @@ function abf_vehicle_post_type()
 
 if (get_option('enable_vehicle_post', 'false') == "true") {
     add_action('init', 'abf_vehicle_post_type');
-}
-
-//Get Quick View frame
-function get_quick_view_product_image()
-{
-    if (get_theme_mod('disable_quick_view', 0)) {
-        return;
-    }
-
-    global $product;
-
-    $image_size = apply_filters('single_product_archive_thumbnail_size', 'woocommerce_thumbnail');
-    $productImages = $product ? $product->get_image($image_size) : '';
-
-    $hover_style = get_theme_mod('product_hover', 'fade_in_back');
-    if ($hover_style !== 'fade_in_back' && $hover_style !== 'zoom_in') {
-        return;
-    }
-    $attachment_ids = $product->get_gallery_image_ids();
-
-    $class = 'show-on-hover absolute fill hide-for-small back-image';
-    if ($hover_style == 'zoom_in') {
-        $class .= $class . ' hover-zoom';
-    }
-
-    if ($attachment_ids) {
-        $loop = 0;
-        foreach ($attachment_ids as $attachment_id) {
-            $image_link = wp_get_attachment_url($attachment_id);
-            if (!$image_link) {
-                continue;
-            }
-            $loop++;
-            $productImages .= wp_get_attachment_image($attachment_id, 'woocommerce_thumbnail', false, array('class' => $class));
-            if ($loop == 1) {
-                break;
-            }
-        }
-    }
-
-    // Run Quick View Script.
-    wp_enqueue_script('wc-add-to-cart-variation');
-
-    return '  <a class=" ' . flatsome_product_box_image_class() .  ' primary is-small mb-0 ajax_add_to_cart is-flat text_replaceable" target="_blank" data-prod="' . $product->get_id() . '" href="' . $product->get_permalink() . '">' . $productImages . '</a>';
 }
 
 final class ABFINDER
@@ -357,13 +312,13 @@ if (!function_exists('abfinder_create_table')) {
 
 require_once ABFINDER_PLUGIN_FILE . 'includes/blocks/custom-block.php';
 
-function add_abfinder_ajax_actions()
+function abf_add_abfinder_ajax_actions()
 {
     add_action('wp_ajax_' . 'auto_bulb_finder', 'abfinder_ajax_function');
     add_action('wp_ajax_nopriv_' . 'auto_bulb_finder', 'abfinder_ajax_function');
 }
 
-add_action('init', 'add_abfinder_ajax_actions');
+add_action('init', 'abf_add_abfinder_ajax_actions');
 
 function abfinder_ajax_function()
 {
@@ -375,22 +330,22 @@ function abfinder_ajax_function()
                 $output = $abfinderDb->query_vehicles($_REQUEST['query']);
                 break;
             case 'get_token':
-                $output = $abfinderDb->get_token($_REQUEST['code']);
+                $output = $abfinderDb->get_token(sanitize_text_field($_REQUEST['code']));
                 break;
             case 'revoke_token':
                 $output = $abfinderDb->revoke_token();
                 break;
             case 'query_vehicle_by_vid':
-                $output = $abfinderDb->query_vehicle_by_vid($_REQUEST['query'], 'woo');
+                $output = $abfinderDb->query_vehicle_by_vid(sanitize_text_field($_REQUEST['query']), 'woo');
                 break;
             case 'query_similar_bulbs':
-                $output = $abfinderDb->query_similar_bulbs($_REQUEST['search']);
+                $output = $abfinderDb->query_similar_bulbs(sanitize_text_field($_REQUEST['search']));
                 break;
             case 'get_products_by_location_size':
-                $output = get_abfinder_woo_shortcode_html($_REQUEST['size']);
+                $output = get_abfinder_woo_shortcode_html(sanitize_text_field($_REQUEST['size']));
                 break;
             case 'get_products_html':
-                $output = get_abfinder_woo_shortcode_html($_REQUEST['ids']);
+                $output = get_abfinder_woo_shortcode_html(sanitize_text_field($_REQUEST['ids']));
                 break;
             case 'save_settings':
                 $output = $abfinderDb->save_settings($_REQUEST['names'], $_REQUEST['values']);
@@ -401,10 +356,10 @@ function abfinder_ajax_function()
 
                 $tmpFileName = $_FILES['upload']['tmp_name'];
 
-                $output = $abfinderDb->import_vehicles($tmpFileName, $_REQUEST['overwrite']);
+                $output = $abfinderDb->import_vehicles($tmpFileName, sanitize_text_field($_REQUEST['overwrite']));
                 break;
             case 'export_vehicles':
-                $output = $abfinderDb->export_vehicles($_REQUEST['all']);
+                $output = $abfinderDb->export_vehicles(sanitize_text_field($_REQUEST['all']));
                 break;
             default:
                 $output = 'No function specified.';
@@ -412,18 +367,13 @@ function abfinder_ajax_function()
         }
 
         $output = json_encode($output);
-        if (is_array($output)) {
-            print_r($output);
-        } else {
-            ob_start();
-            echo $output;
-            ob_end_flush();
-        }
+      
+        wp_send_json($output);
     } catch (\Throwable $th) {
-        echo esc_html("Error occurred: " . $th->getMessage());
+        wp_send_json_error($th->getMessage());
     }
 
-    die;
+    wp_die();
 }
 
 function abfinder_save_settings($names = [], $values = [])

@@ -3,8 +3,9 @@ Contributors: mtoolstec
 Tags: Automotive, Auto Bulb, Year Make Model
 Donate link: https://auto.mtoolstec.com/donate
 Requires at least: 6.0
+Tested up to: 6.1.1
 Requires PHP: 7.4
-Stable tag: trunk
+Stable tag: 2.4.2
 License: GPL v2
 License URI: https://auto.mtoolstec.com/license
 

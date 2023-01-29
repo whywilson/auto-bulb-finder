@@ -437,13 +437,6 @@ body {
     transform: rotate(0deg);
 }
 
-.icon-arrow-right:before {
-    content: " ";
-    padding: 10px;
-    background: url(/wp-content/plugins/auto-bulb-finder/assets/images/arrow-right.svg) center center no-repeat;
-    width: 10px;
-}
-
 .icon-rotate {
     animation: rotate 1.5s linear infinite;
 }

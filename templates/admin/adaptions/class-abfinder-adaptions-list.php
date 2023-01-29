@@ -104,9 +104,8 @@ if (!class_exists('ABFinder_Adaptions_List')) {
         {
             $count           = 0;
             $table_name      = $this->wpdb->prefix . 'abfinder_adaptions';
-            $table_name_post = $this->wpdb->prefix . 'posts';
             if ('' !== $search_val) { ?>
-                Search results for: <strong><?php echo $search_val; ?></strong>
+                Search results for: <strong><?php echo esc_html($search_val); ?></strong>
                 <?php
             }
             $count = $this->wpdb->get_var("SELECT COUNT(*) FROM $table_name");
@@ -248,15 +247,8 @@ if (!class_exists('ABFinder_Adaptions_List')) {
             if (isset($_REQUEST['action'])) {
                 if ('delete' === $_REQUEST['action']) {
                     if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aids = $_REQUEST['aid'];
-                        if (!is_array($aids)) {
-                            $aids = array($aids);
-                        }
-
-                        foreach ($aids as $aid) {
-                            $aid = wp_unslash($_REQUEST['aid']);
-                            $result = $this->helper->abfinder_delete_adaption($aid);
-                        }
+                        $aid = wp_unslash($_REQUEST['aid']);
+                        $result = $this->helper->abfinder_delete_adaption($aid);
                         if ($result) {
                 ?>
                             <div class="notice notice-success is-dismissible">
@@ -279,15 +271,8 @@ if (!class_exists('ABFinder_Adaptions_List')) {
                     }
                 } elseif ('disable' === $_REQUEST['action']) {
                     if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aids = $_REQUEST['aid'];
-                        if (!is_array($aids)) {
-                            $aids = array($aids);
-                        }
-
-                        foreach ($aids as $aid) {
-                            $aid = wp_unslash($_REQUEST['aid']);
-                            $result = $this->helper->abfinder_disable_adaption($aid);
-                        }
+                        $aid = wp_unslash($_REQUEST['aid']);
+                        $result = $this->helper->abfinder_disable_adaption($aid);
                         if ($result) {
                         ?>
                             <div class="notice notice-success is-dismissible">
@@ -310,16 +295,8 @@ if (!class_exists('ABFinder_Adaptions_List')) {
                     }
                 } elseif ('enable' === $_REQUEST['action']) {
                     if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aids = $_REQUEST['aid'];
-                        if (!is_array($aids)) {
-                            $aids = array($aids);
-                        }
-
-                        foreach ($aids as $aid) {
-                            $aid = wp_unslash($_REQUEST['aid']);
-
-                            $result = $this->helper->abfinder_enable_adaption($aid);
-                        }
+                        $aid = wp_unslash($_REQUEST['aid']);
+                        $result = $this->helper->abfinder_enable_adaption($aid);
                         if ($result) {
                         ?>
                             <div class="notice notice-success is-dismissible">

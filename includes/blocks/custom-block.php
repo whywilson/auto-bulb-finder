@@ -44,7 +44,7 @@ function shortcode_auto_bulb_finder($atts = [], $content = null, $tag = '')
                     $bulbResultHtml .= '<div style="padding: 10px">';
                     $product = wc_get_product($fitProduct['variation_id']);
                     if ($product) {
-                        $bulbResultHtml .= woo_block_product_grid_item_html($product);
+                        $bulbResultHtml .= abf_woo_block_product_grid_item_html($product);
                     }
                     $bulbResultHtml .= '  </div>';
                     $bulbResultHtml .= '</div>';

@@ -10,7 +10,8 @@ use ABFinder\Helper\ABFinder_Database; ?>
         } else {
             $content = '<h2 style="text-align: center;margin-top: 6px;">' . $content . '</h2>';
         }
-        echo $content;
+
+        echo wp_kses_post($content);
     }
     ?>
     <div id="selects" class="row" style="margin: 1px;">
@@ -36,7 +37,7 @@ use ABFinder\Helper\ABFinder_Database; ?>
                 rsort($yearRange);
 
                 foreach ($yearRange as $year) {
-                    echo '<option value="' . $year . '" data-connection="makeSelect">' . $year . '</option>';
+                    echo wp_kses('<option value="' . $year . '" data-connection="makeSelect">' . $year . '</option>', array('option' => array('value' => array(), 'data-connection' => array())));
                 }
 
                 ?>
@@ -52,7 +53,7 @@ use ABFinder\Helper\ABFinder_Database; ?>
     <?php
     $appPromotion = get_option("app_promotion_html", get_default_app_promotion_html());
     if ($appPromotion) {
-        echo $appPromotion;
+        echo wp_kses_post($appPromotion);
     }
     ?>
 </div>
@@ -64,6 +65,14 @@ use ABFinder\Helper\ABFinder_Database; ?>
     </div>
 </div>
 
+<style>
+    .icon-arrow-right:before {
+        content: " ";
+        padding: 10px;
+        background: url(<?php echo ABFINDER_PLUGIN_URL . 'assets/images/arrow-right.svg' ?>) center center no-repeat;
+        width: 10px;
+    }
+</style>
 
 <script>
     jQuery(".accordion-title").each(function() {

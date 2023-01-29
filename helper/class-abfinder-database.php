@@ -336,8 +336,6 @@ class ABFinder_Database
 	{
 		$platform = 'woo';
 
-
-
 		$url = $this->base_url . 'queryVehicle?';
 
 		$url .= "plugin=v2&";
@@ -373,7 +371,7 @@ class ABFinder_Database
 				foreach ($productIds as $pid) {
 					$bulbs[$key]['html'] .=  '<div class="medium-3 small-4 large-2 has-equal-box-heights equalize-box">';
 					try {
-						$bulbs[$key]['html'] .=  woo_block_product_grid_item_html(wc_get_product($pid));
+						$bulbs[$key]['html'] .=  abf_woo_block_product_grid_item_html(wc_get_product($pid));
 					} catch (\Throwable $th) {
 					}
 					$bulbs[$key]['html'] .= "</div>";
@@ -406,8 +404,6 @@ class ABFinder_Database
 
 	function get_token($code)
 	{
-
-
 		$url = $this->base_url . 'getToken?';
 
 		$url .= "plugin=wp&";
@@ -450,9 +446,11 @@ class ABFinder_Database
 	public function save_settings($names = [], $values = [])
 	{
 		foreach ($names as $key => $name) {
-			update_option($name, str_replace("\\", "", $values[$key]));
+			$sanitize_name = sanitize_text_field($name);
+			$sanitize_value = sanitize_text_field(wp_unslash($values[$key]));
+			update_option($sanitize_name, $sanitize_value);
 		}
-		return array('msg' => 'Saved');
+		return array('msg' => 'Saved', 'names' => $names, 'values' => $values);
 	}
 
 	public function import_vehicles($fileName)
