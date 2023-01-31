@@ -15,7 +15,7 @@
                     Expiration
                 </th>
                 <td>
-                    <span class="valid-date"> <?php echo $abfCodeExpiration; ?> </span>
+                    <span class="valid-date"> <?php echo esc_html($abfCodeExpiration); ?> </span>
                 </td>
             </tr>
         </tbody>

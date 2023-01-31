@@ -70,10 +70,8 @@ if (!class_exists('ABFinder_Adaptions_List')) {
         public function prepare_items()
         {
             $search_val = '';
-            // We're only interested in when the importer completes.
-            // phpcs:disable WordPress.Security.NonceVerification.Recommended
             if (!empty($_REQUEST['s'])) {
-                $search_val = $_REQUEST['s'];
+                $search_val = sanitize_text_field($_REQUEST['s']);
             }
             $columns               = $this->get_columns();
             $sortable              = $this->get_sortable_columns();
@@ -229,6 +227,13 @@ if (!class_exists('ABFinder_Adaptions_List')) {
             }
         }
 
+        protected function sanitize_aid_array($ids)
+        {
+            $ids = array_map('intval', $ids);
+            $ids = array_filter($ids);
+            return $ids;
+        }
+
         public function column_name($item)
         {
             $item_json = json_decode(json_encode($item), true);
@@ -247,7 +252,7 @@ if (!class_exists('ABFinder_Adaptions_List')) {
             if (isset($_REQUEST['action'])) {
                 if ('delete' === $_REQUEST['action']) {
                     if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aid = wp_unslash($_REQUEST['aid']);
+                        $aid = wp_unslash($this->sanitize_aid_array($_REQUEST['aid']));
                         $result = $this->helper->abfinder_delete_adaption($aid);
                         if ($result) {
                 ?>
@@ -271,7 +276,7 @@ if (!class_exists('ABFinder_Adaptions_List')) {
                     }
                 } elseif ('disable' === $_REQUEST['action']) {
                     if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aid = wp_unslash($_REQUEST['aid']);
+                        $aid = wp_unslash($this->sanitize_aid_array($_REQUEST['aid']));
                         $result = $this->helper->abfinder_disable_adaption($aid);
                         if ($result) {
                         ?>
@@ -295,7 +300,7 @@ if (!class_exists('ABFinder_Adaptions_List')) {
                     }
                 } elseif ('enable' === $_REQUEST['action']) {
                     if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aid = wp_unslash($_REQUEST['aid']);
+                        $aid = wp_unslash($this->sanitize_aid_array($_REQUEST['aid']));
                         $result = $this->helper->abfinder_enable_adaption($aid);
                         if ($result) {
                         ?>

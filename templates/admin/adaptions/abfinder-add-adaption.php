@@ -112,7 +112,7 @@ $status_list = array(
 							<div class="abf-search-result-field" style="display: flex;">
 								<textarea name="abfinder_adaption_fits_on" placeholder="Similar bulb sizes" id="abfinder-bulb-size-search-result" class="regular-text" rows="5" cols="20" style="width: 200px; margin-right: 10px;"></textarea>
 								<button type="button" class="button button-accent" id="abfinder-bulb-size-search-result-button" style="height: 32px;"><?php echo esc_html__('Append', 'auto-bulb-finder'); ?></button>
-								<img id="abf_action_loader" src="<?php echo ABFINDER_PLUGIN_URL . 'assets/images/loading.gif'; ?>" style="margin-left: 10px; height: 24px; display: none; vertical-align: middle;" />
+								<img id="abf_action_loader" src="<?php echo esc_url(ABFINDER_PLUGIN_URL . 'assets/images/loading.gif'); ?>" style="margin-left: 10px; height: 24px; display: none; vertical-align: middle;" />
 							</div>
 						</div>
 					</th>

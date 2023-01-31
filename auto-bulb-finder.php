@@ -3,7 +3,7 @@
 Plugin Name: Auto Bulb Finder for WP & WC
 Plugin URI:  https://auto.mtoolstec.com
 Description: Year/Make/Model/BodyType/Qualifer automoive bulb size querying system for vehicles from 1960 to 2022. Online database or custom vehicle list. Add to any page or content by a shortcode <code>[abf]</code>.
-Version:     2.4.2
+Version:     2.4.3
 Author:      MTools Tec
 Author URI:  https://shop.mtoolstec.com/about-us/
 License:     GPL
@@ -341,12 +341,6 @@ function abfinder_ajax_function()
             case 'query_similar_bulbs':
                 $output = $abfinderDb->query_similar_bulbs(sanitize_text_field($_REQUEST['search']));
                 break;
-            case 'get_products_by_location_size':
-                $output = get_abfinder_woo_shortcode_html(sanitize_text_field($_REQUEST['size']));
-                break;
-            case 'get_products_html':
-                $output = get_abfinder_woo_shortcode_html(sanitize_text_field($_REQUEST['ids']));
-                break;
             case 'save_settings':
                 $output = $abfinderDb->save_settings($_REQUEST['names'], $_REQUEST['values']);
                 break;
@@ -383,18 +377,6 @@ function abfinder_save_settings($names = [], $values = [])
     }
     return array('msg' => 'Saved');
 }
-
-function get_abfinder_woo_shortcode_html($ids)
-{
-    return abfinder_woo_shortcode_html($ids);
-}
-
-function abfinder_woo_shortcode_html($ids = [])
-{
-    echo do_shortcode('[woo ids="' . implode(",", $ids) . '"][/woo]');
-    die;
-}
-
 
 if (!function_exists('is_woocommerce_activated')) {
     function is_woocommerce_activated()

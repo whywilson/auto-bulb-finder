@@ -60,15 +60,11 @@ if ( ! class_exists( 'ABFinder_Errors' ) ) {
 
 				if ( 0 === $this->error_code ) {
 
-					echo '<div class="notice notice-success">';
-					echo '<p>' . esc_html( $message ) . '</p>';
-					echo '</div>';
+					echo '<div class="notice notice-success"><p>' . esc_html( $message ) . '</p> </div>';
 
 				} elseif ( 1 === $this->error_code ) {
 
-					echo '<div class="notice notice-error">';
-					echo '<p>' . esc_html( $message ) . '</p>';
-					echo '</div>';
+					echo '<div class="notice notice-error"><p>' . esc_html( $message ) . '</p></div>';
 				}
 			} else {
 

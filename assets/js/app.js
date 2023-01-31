@@ -340,31 +340,6 @@ jQuery(function ($) {
         promotion.style.display = "block"
     }
 
-    function getProductHtml(productIds) {
-        $.ajax({
-            url: window.location.origin + "/wp-admin/admin-ajax.php",
-            type: 'POST',
-            data: {
-                'action': 'auto_bulb_finder',
-                'fn': 'get_products_html',
-                'ids': productIds
-            },
-            success: function (r) {
-                var obj = JSON.parse(r);
-
-                for (var i = 0; i < productIds.length; i++) {
-                    removeAllChildByClass('woo-product-' + productIds[i])
-                    $('.woo-product-' + productIds[i]).append(obj['woo-' + productIds[i]]).hide().fadeIn('slow')
-                }
-            },
-            complete: function () {
-            },
-            error: function (r) {
-                console.log('error: ' + r)
-            }
-        })
-    }
-
     function removeAllChildNodes(parent) {
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);

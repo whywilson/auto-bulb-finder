@@ -83,7 +83,7 @@ if (!class_exists('ABFinder_Vehicles_List')) {
 				array(
 					'total_items' => $total_items,
 					'per_page'    => $per_page,
-					'total_pages' => ceil( $total_items / $per_page ),
+					'total_pages' => ceil($total_items / $per_page),
 				)
 			);
 
@@ -104,7 +104,7 @@ if (!class_exists('ABFinder_Vehicles_List')) {
 			if ('' !== $search_val) { ?>
 				Search results for: <strong><?php echo $search_val; ?></strong>
 				<?php
-			    }
+			}
 			$count = $this->wpdb->get_var("SELECT COUNT(*) FROM $table_name");
 			return $count;
 		}
@@ -249,15 +249,8 @@ if (!class_exists('ABFinder_Vehicles_List')) {
 			if (isset($_REQUEST['action'])) {
 				if ('delete' === $_REQUEST['action']) {
 					if (isset($_REQUEST['id']) && !empty($_REQUEST['id'])) {
-						$aids = $_REQUEST['id'];
-						if (!is_array($aids)) {
-							$aids = array($aids);
-						}
-
-						foreach ($aids as $id) {
-							$id = wp_unslash($_REQUEST['id']);
-							$result = $this->helper->abfinder_delete_vehicle($id);
-						}
+						$id = wp_unslash($this->sanitize_id_array($_REQUEST['id']));
+						$result = $this->helper->abfinder_delete_vehicle($id);
 						if ($result) {
 				?>
 							<div class="notice notice-success is-dismissible">
@@ -280,15 +273,8 @@ if (!class_exists('ABFinder_Vehicles_List')) {
 					}
 				} elseif ('exclude' === $_REQUEST['action']) {
 					if (isset($_REQUEST['id']) && !empty($_REQUEST['id'])) {
-						$aids = $_REQUEST['id'];
-						if (!is_array($aids)) {
-							$aids = array($aids);
-						}
-
-						foreach ($aids as $id) {
-							$id = wp_unslash($_REQUEST['id']);
-							$result = $this->helper->abfinder_disable_vehicle($id);
-						}
+						$id = wp_unslash($this->sanitize_id_array($_REQUEST['id']));
+						$result = $this->helper->abfinder_disable_vehicle($id);
 						if ($result) {
 						?>
 							<div class="notice notice-success is-dismissible">
@@ -311,16 +297,8 @@ if (!class_exists('ABFinder_Vehicles_List')) {
 					}
 				} elseif ('include' === $_REQUEST['action']) {
 					if (isset($_REQUEST['id']) && !empty($_REQUEST['id'])) {
-						$aids = $_REQUEST['id'];
-						if (!is_array($aids)) {
-							$aids = array($aids);
-						}
-
-						foreach ($aids as $id) {
-							$id = wp_unslash($_REQUEST['id']);
-
-							$result = $this->helper->abfinder_enable_vehicle($id);
-						}
+						$id = wp_unslash($this->sanitize_id_array($_REQUEST['id']));
+						$result = $this->helper->abfinder_enable_vehicle($id);
 						if ($result) {
 						?>
 							<div class="notice notice-success is-dismissible">
@@ -344,6 +322,13 @@ if (!class_exists('ABFinder_Vehicles_List')) {
 				}
 			}
 		}
+
+		protected function sanitize_id_array($ids)
+        {
+            $ids = array_map('intval', $ids);
+            $ids = array_filter($ids);
+            return $ids;
+        }
 
 		/**
 		 * Columns to make sortable.

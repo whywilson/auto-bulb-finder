@@ -21,20 +21,27 @@ if (!$abfToken || !$abfCodeStatus || $abfCodeExpired || $abfCodeStatus != 1) : ?
                     <td>
                         <input id="abf_code" type="password" class="" placeholder="License Code" value="">
                         <button id="abf_code_submit" style="min-height: 30px;">Submit</button>
-                        <img id="abf_code_loader" src="<?php echo ABFINDER_PLUGIN_URL . 'assets/images/loading.gif'; ?>" style="height: 24px; display: none; vertical-align: middle;" />
+                        <img id="abf_code_loader" src="<?php echo esc_url(ABFINDER_PLUGIN_URL . 'assets/images/loading.gif'); ?>" style="height: 24px; display: none; vertical-align: middle;" />
                     </td>
                 </tr>
                 <?php
-                if (!$abfToken) :
-                    echo '<tr><td><div class="notice notice-error is-dismissible"> <p> Not registered to Auto Bulb Online Database. <a href="https://shop.mtoolstec.com/product/auto-bulb-finder-plugin-for-woocommerce" target="_blank">Purchase License Code</a></p> </div></td></tr>';
-                endif;
-                ?>
+                if (!$abfToken) : ?>
+                    <tr>
+                        <td>
+                            <div class="notice notice-error is-dismissible">
+                                <p> Not registered to Auto Bulb Online Database. <a href="https://shop.mtoolstec.com/product/auto-bulb-finder-plugin-for-woocommerce" target="_blank">Purchase License Code</a></p>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
-    <?php if ($abfCodeExpired || $abfCodeStatus == 2) :
-        echo '<div class="notice notice-error is-dismissible"> <p> License Code Expired.</p> </div>';
-    endif;
+    <?php if ($abfCodeExpired || $abfCodeStatus == 2) : ?>
+        <div class="notice notice-error is-dismissible">
+            <p> License Code Expired.</p>
+        </div>
+    <?php endif;
     ?>
 <?php endif; ?>
 

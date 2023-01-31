@@ -99,6 +99,14 @@ function shortcode_auto_bulb_finder($atts = [], $content = null, $tag = '')
     return $html;
 }
 
+function getSizeAndProducIdByVid($vid = '', $year = '', $make = '', $model = '', $submodel = '')
+{
+    $url = 'https://auto.mtoolstec.com/queryVehicleByVid?platform=web&vid=' . $vid . '&year=' . $year . '&make=' . $make . '&model=' . $model . '&submodel=' . $submodel;
+    $response = wp_remote_get($url);
+    $result = wp_remote_retrieve_body($response);
+    return $result;
+}
+
 add_shortcode('abf', 'shortcode_auto_bulb_finder');
 
 function shortcode_auto_bulb_finder_vehicle($atts = [], $content = null, $tag = '')
@@ -144,7 +152,7 @@ function abf_products_shortcode($atts)
             ?> <div class="product-small col has-hover product type-product">
                     <a href="<?php echo esc_url($product->get_permalink()); ?>" target="_blank">
                         <?php echo $product->get_image(); ?>
-                        <p class="name product-title woocommerce-loop-product__title"><?php echo $product->get_name(); ?></p>
+                        <p class="name product-title woocommerce-loop-product__title"><?php echo esc_html($product->get_name()); ?></p>
                     </a>
                     <?php echo $product->get_price_html(); ?>
                     <?php
@@ -216,14 +224,6 @@ function abf_ux_shortcode_func($atts)
     ), $atts));
 
     wp_enqueue_script('abf-app-js');
-    echo do_shortcode('[abf]' . $title . '[/abf]');
+    echo do_shortcode(force_balance_tags('[abf]' . $title . '[/abf]'));
 }
 add_shortcode('abf_ux_shortcode', 'abf_ux_shortcode_func');
-
-function getSizeAndProducIdByVid($vid = '', $year = '', $make = '', $model = '', $submodel = '')
-{
-    $url = 'https://auto.mtoolstec.com/queryVehicleByVid?platform=web&vid=' . $vid . '&year=' . $year . '&make=' . $make . '&model=' . $model . '&submodel=' . $submodel;
-    $response = wp_remote_get($url);
-    $result = wp_remote_retrieve_body($response);
-    return $result;
-}
