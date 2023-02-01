@@ -68,7 +68,7 @@ if (!class_exists('ABFinder_Vehicles_List')) {
 		{
 			$search_val = '';
 			if (!empty($_REQUEST['s'])) {
-				$search_val = $_REQUEST['s'];
+				$search_val = sanitize_text_field($_REQUEST['s']);
 			}
 			$columns               = $this->get_columns();
 			$sortable              = $this->get_sortable_columns();
@@ -102,7 +102,7 @@ if (!class_exists('ABFinder_Vehicles_List')) {
 			$table_name      = $this->wpdb->prefix . 'abfinder_vehicles';
 			$table_name_post = $this->wpdb->prefix . 'posts';
 			if ('' !== $search_val) { ?>
-				Search results for: <strong><?php echo $search_val; ?></strong>
+				Search results for: <strong><?php echo esc_html($search_val); ?></strong>
 				<?php
 			}
 			$count = $this->wpdb->get_var("SELECT COUNT(*) FROM $table_name");
