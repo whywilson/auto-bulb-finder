@@ -20,7 +20,7 @@ $abfinder_adaption_size = '';
 $abfinder_adaption_products = '';
 $abfinder_adaption_fits_on = '';
 $abfinder_status = '0';
-// $aid = $_GET['aid'];
+
 if ($aid) {
 	$adaption_data = $helper->abfinder_get_adaption(intval($aid));
 	if (!empty($adaption_data)) {
@@ -56,7 +56,7 @@ $status_list = array(
 					</th>
 					<?php
 					if (isset($_POST['abfinder_adaption_name'])) {
-						$abfinder_adaption_name = isset($_POST['abfinder_adaption_name']) ? wc_clean($_POST['abfinder_adaption_name']) : '';
+						$abfinder_adaption_name = isset($_POST['abfinder_adaption_name']) ? sanitize_text_field($_POST['abfinder_adaption_name']) : '';
 					} else {
 						$abfinder_adaption_name = $abfinder_adaption_name;
 					}
@@ -73,7 +73,7 @@ $status_list = array(
 					</th>
 					<?php
 					if (isset($_POST['abfinder_adaption_size'])) {
-						$abfinder_adaption_size = isset($_POST['abfinder_adaption_size']) ? wc_clean($_POST['abfinder_adaption_size']) : '';
+						$abfinder_adaption_size = isset($_POST['abfinder_adaption_size']) ? sanitize_text_field($_POST['abfinder_adaption_size']) : '';
 					} else {
 						$abfinder_adaption_size = $abfinder_adaption_size;
 					}
@@ -90,7 +90,7 @@ $status_list = array(
 					</th>
 					<?php
 					if (isset($_POST['abfinder_adaption_products'])) {
-						$abfinder_adaption_products = isset($_POST['abfinder_adaption_products']) ? wc_clean($_POST['abfinder_adaption_products']) : '';
+						$abfinder_adaption_products = isset($_POST['abfinder_adaption_products']) ? sanitize_text_field($_POST['abfinder_adaption_products']) : '';
 					} else {
 						$abfinder_adaption_products = $abfinder_adaption_products;
 					}
@@ -118,7 +118,7 @@ $status_list = array(
 					</th>
 					<?php
 					if (isset($_POST['abfinder_adaption_fits_on'])) {
-						$abfinder_adaption_fits_on = isset($_POST['abfinder_adaption_fits_on']) ? wc_clean($_POST['abfinder_adaption_fits_on']) : '';
+						$abfinder_adaption_fits_on = isset($_POST['abfinder_adaption_fits_on']) ? sanitize_text_field($_POST['abfinder_adaption_fits_on']) : '';
 					} else {
 						$abfinder_adaption_fits_on = $abfinder_adaption_fits_on;
 					}

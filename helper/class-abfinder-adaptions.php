@@ -183,40 +183,6 @@ if (!class_exists('ABFinder_Adaptions')) {
             return apply_filters('abfinder_allocated_adaptions', $result);
         }
 
-        /**
-         * Get availablity to group buy
-         *
-         * @param [type] $product_id int.
-         * @return Array
-         */
-        public function abfinder_is_available($product_id)
-        {
-            $product = wc_get_product($product_id);
-            $result = $this->wpdb->get_row($this->wpdb->prepare("Select * from {$this->table_name} where product_id=%d AND status=0", $product_id));
-
-            if (!empty($result)) {
-                $start_date   = $result->start_date;
-                $end_date     = $result->end_date;
-                $price        = $result->price;
-                $limit        = $result->limit;
-                $today        = gmdate('Y-m-d H:i:s');
-                $current_time = strtotime($today);
-                $start_time   = strtotime($start_date);
-                $end_time     = strtotime($end_date);
-
-                if ($start_time <= $current_time && $current_time <= $end_time) {
-                    $this->start_time   = $start_time;
-                    $this->end_time     = $end_time;
-                    $this->current_time = $current_time;
-                    $this->end_time     = $end_time;
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public function abfinder_enable_adaption($aid)
         {
             $response = false;

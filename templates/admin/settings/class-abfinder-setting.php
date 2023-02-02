@@ -83,20 +83,6 @@ defined('ABSPATH') || exit;
                 ?>
             </td>
             </tr>
-            <tr style="display: none;">
-                <td><label> Enable Vehicle Post </label> <input id="enable_vehicle_post" type="checkbox" <?php if (get_option('enable_vehicle_post', false) == "true") {
-                                                                                                                echo 'checked';
-                                                                                                            } ?>> </td>
-                <td>
-                    <div id="vehiclePostTypeIntro" style="display: <?php echo get_option('enable_vehicle_post', false) == "true" ? 'block' : 'none'; ?>;">
-                        <h1> Vehicle Info with Bulb Size</h1>
-                        <p> The final content will include SEO content, selector and bulb size information.</p>
-                        <p> 1. By the latest year [abf make="ford" model="F-150"]. </p>
-                        <p> 2. By year, make and model [abf year="2018" make="ford" model="F-150"]. </p>
-                        <p> 3. By vehicle id [abf vid="527825"]. The vid can be checked from <a href="https://auto.mtoolstec.com" target="_blank">Auto Bulb Finder - Web</a>.</p>
-                    </div>
-                </td>
-            </tr>
             <tr valign="top">
                 <td>
                     <button id="save_abf_settings" class="button-primary"> Save All Settings</button>

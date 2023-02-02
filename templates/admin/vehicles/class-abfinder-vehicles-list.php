@@ -323,11 +323,14 @@ if (!class_exists('ABFinder_Vehicles_List')) {
 			}
 		}
 
-		protected function sanitize_id_array($ids)
+		protected function sanitize_id_array($id)
         {
-            $ids = array_map('intval', $ids);
-            $ids = array_filter($ids);
-            return $ids;
+			if(!is_array($id)){
+				$id = [$id];
+			}
+            $id = array_map('intval', $id);
+            $id = array_filter($id);
+            return $id;
         }
 
 		/**

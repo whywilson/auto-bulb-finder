@@ -19,83 +19,9 @@ function shortcode_auto_bulb_finder($atts = [], $content = null, $tag = '')
         $tag
     );
 
-    $preloader = file_get_contents(ABFINDER_PLUGIN_FILE . 'templates/front/class-abfinder-preloader.php');
-
-    if ($bs_atts['vid'] == '' && $bs_atts['make'] == '') {
-        ob_start();
-        include ABFINDER_PLUGIN_FILE . 'templates/front/class-abfinder-dynamic.php';
-        $html = ob_get_clean();
-        return $html;
-    } else {
-        $html = file_get_contents(ABFINDER_PLUGIN_FILE . 'templates/front/class-abfinder-detail.php');
-        $sizeAndProductId = json_decode(getSizeAndProducIdByVid($bs_atts['vid'], $bs_atts['year'], $bs_atts['make'], $bs_atts['model'], $bs_atts['submodel']), true);
-        $bulbResultHtml = '';
-        $vehicleName = $sizeAndProductId['year'] . ' ' . $sizeAndProductId['make'] . ' ' . $sizeAndProductId['model'];
-        $html = str_replace("{year_make_model}", $vehicleName, $html);
-        foreach ($sizeAndProductId['bulb'] as $bulb) {
-            $bulbResultHtml .= '<div id="v-' . $bs_atts['vid'] . '-' . str_replace(" ", "-", $bulb['location']) . '">';
-            $bulbResultHtml .= '<div style="display: -webkit-box;"><h2 style="text-transform: capitalize; width: auto;display: inline-block; ">' . $bulb['location'] . '</h2>';
-            $bulbResultHtml .= '<a style="text-transform: capitalize; color: #334862" > &nbsp;&nbsp; - Bulb Size: ' . $bulb['size'] . '</a></div>';
-            $bulbResultHtml .= '<div id="v-' . $bs_atts['vid'] . '-' . str_replace(" ", "-", $bulb['location']) . '-products" class="slide-box" style="transform: translateX(0px);"> ';
-
-            if (sizeof($bulb['product']) > 0) {
-                foreach ($bulb['product'] as $fitProduct) {
-                    $bulbResultHtml .= '<div class="slide-item woo-product-' . $fitProduct['variation_id'] . ' medium-3 small-5 large-3 has-equal-box-heights equalize-box"> ';
-                    $bulbResultHtml .= '<div style="padding: 10px">';
-                    $product = wc_get_product($fitProduct['variation_id']);
-                    if ($product) {
-                        $bulbResultHtml .= abf_woo_block_product_grid_item_html($product);
-                    }
-                    $bulbResultHtml .= '  </div>';
-                    $bulbResultHtml .= '</div>';
-                }
-            } else {
-                $bulbResultHtml .= '<p><a style="color: gray;">&nbsp;&nbsp;LED for this bulb is coming soon.</a></p>';
-            }
-
-
-            $bulbResultHtml .= '</div>';
-            $bulbResultHtml .= '</div>';
-        }
-
-        $html = str_replace("{bulb_result}", $bulbResultHtml, $html);
-        $html = str_replace("{introduction}", $sizeAndProductId['seo'], $html);
-        $reviews = json_decode($sizeAndProductId['review']);
-        if (sizeof($reviews) > 0) {
-            $reviewsHtml = '<div class="yt-slide-box">';
-            $reviewIndex = 0;
-            foreach ($reviews as $review) {
-                $reviewsHtml .= '<div class="yt-slide-item" ';
-                if ($reviewIndex == 0) {
-                    $reviewsHtml .= 'style="padding-left:20px;transform:translateX(-10px)"';
-                }
-                $reviewsHtml .= '>';
-                if (strlen($review->testimonial) > 0) {
-                    $reviewsHtml .= '<blockquote>' . $review->testimonial . '   ---' . $review->youtuber . '</blockquote>';
-                }
-                $reviewsHtml .= '<div class="yt-video-container">';
-                $reviewsHtml .= '<iframe width="1280" height="720" src="https://www.youtube.com/embed/' . $review->vid . '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-                $reviewsHtml .= '</div>';
-                $reviewsHtml .= '</div>';
-                $reviewIndex++;
-            }
-            $reviewsHtml .= '</div>';
-            $html = str_replace("{videos}", $reviewsHtml, $html);
-        }
-
-        $html = str_replace("{reviews}", '[cusrev_all_reviews sort="DESC" sort_by="date" per_page="10" number="-1" show_summary_bar="false" show_pictures="false" show_products="true" categories="" product_tags="" products="" shop_reviews="true" number_shop_reviews="-1" inactive_products="false" show_replies="false" show_more="1" min_chars="0"]', $html);
-    }
-
-    if (strlen(trim($content)) > 0) {
-        if (strpos($content, 'h1') !== false  || strpos($content, 'h2') !== false) {
-        } else {
-            $content = '<h2 style="text-align: center;margin-top: 6px;">' . $content . '</h2>';
-        }
-    }
-
-    $html = str_replace("{preloader}", $preloader, $html);
-    $html = str_replace("{content}", $content, $html);
-    $html = str_replace("{promotion}", get_option("app_promotion_html", get_default_app_promotion_html()), $html);
+    ob_start();
+    include ABFINDER_PLUGIN_FILE . 'templates/front/class-abfinder-dynamic.php';
+    $html = ob_get_clean();
     return $html;
 }
 
@@ -144,40 +70,42 @@ function abf_products_shortcode($atts)
     <div class="woocommerce columns-5 ">
         <div class="products row row-small large-columns-5 medium-columns-3 small-columns-2">
             <?php
-            foreach ($ids as $id) {
-                $product = wc_get_product($id);
-                if (!$product) {
-                    continue;
-                }
+            if (is_woocommerce_activated()) {
+                foreach ($ids as $id) {
+                    $product = wc_get_product($id);
+                    if (!$product) {
+                        continue;
+                    }
             ?> <div class="product-small col has-hover product type-product">
-                    <a href="<?php echo esc_url($product->get_permalink()); ?>" target="_blank">
-                        <?php echo $product->get_image(); ?>
-                        <p class="name product-title woocommerce-loop-product__title"><?php echo esc_html($product->get_name()); ?></p>
-                    </a>
-                    <?php echo $product->get_price_html(); ?>
-                    <?php
-                    $args = array(
-                        'quantity' => 1,
-                        'class' => 'button product_type_simple add_to_cart_button ajax_add_to_cart',
-                    );
+                        <a href="<?php echo esc_url($product->get_permalink()); ?>" target="_blank">
+                            <?php echo $product->get_image(); ?>
+                            <p class="name product-title woocommerce-loop-product__title"><?php echo esc_html($product->get_name()); ?></p>
+                        </a>
+                        <?php echo $product->get_price_html(); ?>
+                        <?php
+                        $args = array(
+                            'quantity' => 1,
+                            'class' => 'button product_type_simple add_to_cart_button ajax_add_to_cart',
+                        );
 
-                    echo apply_filters(
-                        'woocommerce_loop_add_to_cart_link',
-                        sprintf(
-                            '<p><a href="%s" target="_blank" data-quantity="%s" class="%s" %s>%s</a></p>',
-                            esc_url($product->add_to_cart_url()),
-                            esc_attr(isset($args['quantity']) ? $args['quantity'] : 1),
-                            esc_attr(isset($args['class']) ? $args['class'] : 'button'),
-                            isset($args['attributes']) ? wc_implode_html_attributes($args['attributes']) : '',
-                            esc_html($product->add_to_cart_text())
-                        ),
-                        $product,
-                        $args
-                    );
-                    ?>
+                        echo apply_filters(
+                            'woocommerce_loop_add_to_cart_link',
+                            sprintf(
+                                '<p><a href="%s" target="_blank" data-quantity="%s" class="%s" %s>%s</a></p>',
+                                esc_url($product->add_to_cart_url()),
+                                esc_attr(isset($args['quantity']) ? $args['quantity'] : 1),
+                                esc_attr(isset($args['class']) ? $args['class'] : 'button'),
+                                isset($args['attributes']) ? wc_implode_html_attributes($args['attributes']) : '',
+                                esc_html($product->add_to_cart_text())
+                            ),
+                            $product,
+                            $args
+                        );
+                        ?>
 
-                </div>
+                    </div>
             <?php
+                }
             }
             ?>
         </div>
@@ -227,3 +155,14 @@ function abf_ux_shortcode_func($atts)
     echo do_shortcode(force_balance_tags('[abf]' . $title . '[/abf]'));
 }
 add_shortcode('abf_ux_shortcode', 'abf_ux_shortcode_func');
+
+if (!function_exists('is_woocommerce_activated')) {
+    function is_woocommerce_activated()
+    {
+        if (class_exists('woocommerce')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}

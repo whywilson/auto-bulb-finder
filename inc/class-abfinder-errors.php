@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file handles Errors
  *
@@ -9,15 +10,16 @@
 
 namespace ABFinder\Inc;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit;
 }
 
-if ( ! class_exists( 'ABFinder_Errors' ) ) {
+if (!class_exists('ABFinder_Errors')) {
 	/**
 	 * Manager Error class
 	 */
-	class ABFinder_Errors {
+	class ABFinder_Errors
+	{
 		/**
 		 * Construct function
 		 *
@@ -29,7 +31,8 @@ if ( ! class_exists( 'ABFinder_Errors' ) ) {
 		 *
 		 * @param array $error_code Data.
 		 */
-		public function __construct( $error_code = 0 ) {
+		public function __construct($error_code = 0)
+		{
 			$this->error_code = $error_code;
 		}
 
@@ -38,15 +41,17 @@ if ( ! class_exists( 'ABFinder_Errors' ) ) {
 		 *
 		 * @param array $code Data.
 		 */
-		public function abfinder_set_error_code( $code ) {
-			if ( ! empty( $code ) ) {
+		public function abfinder_set_error_code($code)
+		{
+			if (!empty($code)) {
 				$this->error_code = $code;
 			}
 		}
 		/**
 		 * Get_error function
 		 */
-		public function abfinder_get_error_code() {
+		public function abfinder_get_error_code()
+		{
 			return $this->error_code;
 		}
 		/**
@@ -54,32 +59,28 @@ if ( ! class_exists( 'ABFinder_Errors' ) ) {
 		 *
 		 * @param array $message Data.
 		 */
-		public function abfinder_print_notification( $message ) {
+		public function abfinder_print_notification($message)
+		{
 
-			if ( is_admin() ) {
+			if (is_admin()) {
 
-				if ( 0 === $this->error_code ) {
+				if (0 === $this->error_code) {
 
-					echo '<div class="notice notice-success"><p>' . esc_html( $message ) . '</p> </div>';
+					echo '<div class="notice notice-success"><p>' . esc_html($message) . '</p> </div>';
+				} elseif (1 === $this->error_code) {
 
-				} elseif ( 1 === $this->error_code ) {
-
-					echo '<div class="notice notice-error"><p>' . esc_html( $message ) . '</p></div>';
+					echo '<div class="notice notice-error"><p>' . esc_html($message) . '</p></div>';
 				}
 			} else {
 
-				if ( 0 === $this->error_code ) {
+				if (0 === $this->error_code) {
 
-					wc_print_notice( $message, 'success' );
+					echo '<div class="abfinder-success"><p>' . esc_html($message) . '</p> </div>';
+				} elseif (1 === $this->error_code) {
 
-				} elseif ( 1 === $this->error_code ) {
-
-					wc_print_notice( $message, 'error' );
-
+					echo '<div class="abfinder-error"><p>' . esc_html($message) . '</p></div>';
 				}
 			}
-
 		}
-
 	}
 }

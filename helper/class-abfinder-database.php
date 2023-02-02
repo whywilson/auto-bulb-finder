@@ -332,62 +332,8 @@ class ABFinder_Database
 		return $query_result;
 	}
 
-	public function query_vehicle_by_vid($vid, $country, $platform = "woo")
-	{
-		$platform = 'woo';
-
-		$url = $this->base_url . 'queryVehicle?';
-
-		$url .= "plugin=v2&";
-		$url .= "platform=" . $platform . "&";
-		$url .= "country=" . $country . "&";
-		$url .= "vid=" . $vid;
-
-		$response = wp_remote_get($url);
-		$reponse_code = wp_remote_retrieve_response_code($response);
-		if ($reponse_code != 200) {
-			return [];
-		}
-		$remote_result = wp_remote_retrieve_body($response);
-		$json = json_decode($remote_result, true);
-		if ($json['id'] == 'vehicle') {
-			if (!class_exists('ABFinder_Adaptions')) {
-				require_once ABFINDER_PLUGIN_FILE . 'helper/class-abfinder-adaptions.php';
-			}
-
-			if (array_key_exists('bulb', $json)) {
-				unset($json['bulb']);
-			}
-			$bulbs = $json['items'];
-			foreach ($bulbs as $key => $bulb) {
-				//get product id from adaptions
-				$bulbSize = $bulb[0];
-				unset($bulbs[$key]);
-				$helper = new ABFinder_Adaptions();
-				$productIds = $helper->abfinder_get_adaption_by_size($bulbSize);
-				$bulbs[$key]['size'] = $bulbSize;
-				$bulbs[$key]['products'] = $productIds;
-				$bulbs[$key]['html'] = '<div class="slide-box">';
-				foreach ($productIds as $pid) {
-					$bulbs[$key]['html'] .=  '<div class="medium-3 small-4 large-2 has-equal-box-heights equalize-box">';
-					try {
-						$bulbs[$key]['html'] .=  abf_woo_block_product_grid_item_html(wc_get_product($pid));
-					} catch (\Throwable $th) {
-					}
-					$bulbs[$key]['html'] .= "</div>";
-				}
-				$bulbs[$key]['html'] .= "</div>";
-			}
-			$json['items'] = $bulbs;
-		}
-
-		return $json;
-	}
-
 	public function query_similar_bulbs($search = "")
 	{
-
-
 		$url = $this->base_url . 'queryBulbSimilar?';
 
 		$url .= "search=" . $search;

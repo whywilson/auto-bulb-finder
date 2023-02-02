@@ -3,7 +3,7 @@
 Plugin Name: Auto Bulb Finder for WP & WC
 Plugin URI:  https://auto.mtoolstec.com
 Description: Year/Make/Model/BodyType/Qualifer automoive bulb size querying system for vehicles from 1960 to 2022. Online database or custom vehicle list. Add to any page or content by a shortcode <code>[abf]</code>.
-Version:     2.4.4
+Version:     2.4.5
 Author:      MTools Tec
 Author URI:  https://shop.mtoolstec.com/about-us/
 License:     GPL
@@ -122,34 +122,6 @@ function abf_jquery_toggle($in)
     } else {
         return $in;
     }
-}
-
-function abf_woo_block_product_grid_item_html($_product)
-{
-    global $product, $post;
-    $product = $_product;
-    $post    = get_post($_product->get_id());
-    $html    = abf_wc_get_template_part_str('content-product-simple');
-    $html = str_replace('a href=', 'a target="_blank" href=', $html);
-    return $html;
-}
-
-function abf_wc_get_template_part_str($template_name, $part_name = null)
-{
-    ob_start();
-    wc_get_template_part($template_name, $part_name);
-    $var = ob_get_contents();
-    ob_end_clean();
-    return $var;
-}
-
-function abf_get_template_html()
-{
-    ob_start();
-    abf_get_template('product-item');
-    $var = ob_get_contents();
-    ob_end_clean();
-    return $var;
 }
 
 function abf_locate_template($template_name, $template_path = '', $default_path = '')
@@ -326,42 +298,33 @@ function abfinder_ajax_function()
         $abfinderDb = new ABFinder_Database();
 
         switch ($_REQUEST['fn']) {
-            case 'query_vehicle':
-                $output = $abfinderDb->query_vehicles($_REQUEST['query']);
-                break;
             case 'get_token':
                 $output = $abfinderDb->get_token(sanitize_text_field($_REQUEST['code']));
-                break;
-            case 'revoke_token':
-                $output = $abfinderDb->revoke_token();
-                break;
-            case 'query_vehicle_by_vid':
-                $output = $abfinderDb->query_vehicle_by_vid(sanitize_text_field($_REQUEST['query']), 'woo');
                 break;
             case 'query_similar_bulbs':
                 $output = $abfinderDb->query_similar_bulbs(sanitize_text_field($_REQUEST['search']));
                 break;
-            case 'save_settings':
-                $output = $abfinderDb->save_settings($_REQUEST['names'], $_REQUEST['values']);
-                break;
             case 'import_vehicles':
-                $fileName = preg_replace('/\s+/', '-', $_FILES["upload"]["name"]);
-                $fileName = preg_replace('/[^A-Za-z0-9.\-]/', '', $fileName);
-
-                $tmpFileName = $_FILES['upload']['tmp_name'];
-
-                $output = $abfinderDb->import_vehicles($tmpFileName, sanitize_text_field($_REQUEST['overwrite']));
+                $output = $abfinderDb->import_vehicles(sanitize_file_name($_FILES['upload']['tmp_name']), sanitize_text_field($_REQUEST['overwrite']));
                 break;
             case 'export_vehicles':
                 $output = $abfinderDb->export_vehicles(sanitize_text_field($_REQUEST['all']));
+                break;
+            case 'save_settings':
+                $output = $abfinderDb->save_settings($_REQUEST['names'], $_REQUEST['values']);
+                break;
+            case 'query_vehicle':
+                $output = $abfinderDb->query_vehicles($_REQUEST['query']);
+                break;
+            case 'revoke_token':
+                $output = $abfinderDb->revoke_token();
                 break;
             default:
                 $output = 'No function specified.';
                 break;
         }
-
         $output = json_encode($output);
-      
+
         wp_send_json($output);
     } catch (\Throwable $th) {
         wp_send_json_error($th->getMessage());

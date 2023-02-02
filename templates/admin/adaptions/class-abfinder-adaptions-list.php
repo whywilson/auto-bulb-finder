@@ -227,11 +227,14 @@ if (!class_exists('ABFinder_Adaptions_List')) {
             }
         }
 
-        protected function sanitize_aid_array($ids)
+        protected function sanitize_id_array($id)
         {
-            $ids = array_map('intval', $ids);
-            $ids = array_filter($ids);
-            return $ids;
+            if(!is_array($id)){
+				$id = [$id];
+			}
+            $id = array_map('intval', $id);
+            $id = array_filter($id);
+            return $id;
         }
 
         public function column_name($item)
@@ -252,7 +255,7 @@ if (!class_exists('ABFinder_Adaptions_List')) {
             if (isset($_REQUEST['action'])) {
                 if ('delete' === $_REQUEST['action']) {
                     if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aid = wp_unslash($this->sanitize_aid_array($_REQUEST['aid']));
+                        $aid = wp_unslash($this->sanitize_id_array($_REQUEST['aid']));
                         $result = $this->helper->abfinder_delete_adaption($aid);
                         if ($result) {
                 ?>
@@ -276,7 +279,7 @@ if (!class_exists('ABFinder_Adaptions_List')) {
                     }
                 } elseif ('disable' === $_REQUEST['action']) {
                     if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aid = wp_unslash($this->sanitize_aid_array($_REQUEST['aid']));
+                        $aid = wp_unslash($this->sanitize_id_array($_REQUEST['aid']));
                         $result = $this->helper->abfinder_disable_adaption($aid);
                         if ($result) {
                         ?>
@@ -300,7 +303,7 @@ if (!class_exists('ABFinder_Adaptions_List')) {
                     }
                 } elseif ('enable' === $_REQUEST['action']) {
                     if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aid = wp_unslash($this->sanitize_aid_array($_REQUEST['aid']));
+                        $aid = wp_unslash($this->sanitize_id_array($_REQUEST['aid']));
                         $result = $this->helper->abfinder_enable_adaption($aid);
                         if ($result) {
                         ?>
