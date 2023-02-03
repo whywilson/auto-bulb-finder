@@ -2,7 +2,7 @@
 
 use ABFinder\Helper\ABFinder_Database; ?>
 
-<?php echo file_get_contents(ABFINDER_PLUGIN_FILE . 'templates/front/class-abfinder-preloader.php'); ?>
+<?php include ABFINDER_PLUGIN_FILE . 'templates/front/class-abfinder-loader.php'; ?>
 <div id="abf-block" style="background: transparent;">
     <?php
     if ($content) {
@@ -51,7 +51,7 @@ use ABFinder\Helper\ABFinder_Database; ?>
 </div>
 <div id="app_promotion" style="display: none;padding: 10px;">
     <?php
-    $appPromotion = get_option("app_promotion_html", get_default_app_promotion_html());
+    $appPromotion = get_option("app_promotion_html", abfinder_get_default_app_promotion_html());
     if ($appPromotion) {
         echo wp_kses_post($appPromotion);
     }

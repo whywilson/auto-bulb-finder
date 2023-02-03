@@ -3,7 +3,7 @@
 Plugin Name: Auto Bulb Finder for WP & WC
 Plugin URI:  https://auto.mtoolstec.com
 Description: Year/Make/Model/BodyType/Qualifer automoive bulb size querying system for vehicles from 1960 to 2022. Online database or custom vehicle list. Add to any page or content by a shortcode <code>[abf]</code>.
-Version:     2.4.5
+Version:     2.4.6
 Author:      MTools Tec
 Author URI:  https://shop.mtoolstec.com/about-us/
 License:     GPL
@@ -53,54 +53,48 @@ add_action(
 );
 
 
-register_activation_hook(__FILE__, 'auto_bulb_finder_install');
+register_activation_hook(__FILE__, 'abfinder_plugin_install');
 
-register_deactivation_hook(__FILE__, 'auto_bulb_finder_deactive');
+register_deactivation_hook(__FILE__, 'abfinder_plugin_deactive');
 
-function auto_bulb_finder_install()
+function abfinder_plugin_install()
 {
     add_option("enable_vehicle_post", "false");
-    add_option("app_promotion_html", get_default_app_promotion_html());
+    add_option("app_promotion_html", abfinder_get_default_app_promotion_html());
 }
 
-function auto_bulb_finder_deactive()
+function abfinder_plugin_deactive()
 {
     delete_option('enable_vehicle_post');
     delete_option('app_promotion_html');
     unregister_post_type('vehicle');
 }
 
-function get_default_app_promotion_html()
+function abfinder_get_default_app_promotion_html()
 {
     return ' <hr class="solid" style="margin-bottom: 12px">  <p>Get Full Bulb Size on Auto Bulb Finder App.</p>  <p style="text-align: left;"> <a class="bullet-btn" style="background-image: linear-gradient(#3bc5ff, #5c8feb); color: white;" href="https://apps.apple.com/us/app/anyvalue/id1547269180" target="_blank" rel="noopener">App Store</a> <a class="bullet-btn" style="background-image: linear-gradient(#0FBEFC, #19E46C); color: white;" href="https://play.google.com/store/apps/details?id=com.automotive.mtools&hl=en_US&gl=US" target="_blank" rel="noopener">Play Store</a>  </p>  <style type="text/css"> .bullet-btn { border-radius: 20px; border-width: 2px; padding: 4px 12px; color: white; background-color: dodgerblue; text-decoration: none }  </style>';
 }
 
-add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'abf_add_settings_link');
-add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'add_ab_finder_adaptions_link');
-add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'add_ab_finder_vehicles_link');
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'abfinder_add_settings_link');
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'abfinder_add_adaptions_link');
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'abfinder_add_vehicles_link');
 
-function abf_add_settings_link($links)
+function abfinder_add_settings_link($links)
 {
     return array_merge($links, array('<a href="' . admin_url('admin.php?page=auto-bulb-finder') . '">Settings</a>',));
 }
 
-function add_ab_finder_adaptions_link($links)
+function abfinder_add_adaptions_link($links)
 {
     return array_merge($links, array('<a href="' . admin_url('admin.php?page=auto-bulb-finder-adaption') . '">Adaptions</a>',));
 }
 
-function add_ab_finder_vehicles_link($links)
+function abfinder_add_vehicles_link($links)
 {
     return array_merge($links, array('<a href="' . admin_url('admin.php?page=auto-bulb-finder-vehicle') . '">Vehicles</a>',));
 }
 
-
-function auto_bulb_finder_config_html()
-{
-    require dirname(__FILE__) . '/templates/admin/settings/class-abfinder-setting.php';
-}
-
-function abf_add_jquery()
+function abfinder_add_jquery()
 {
     if (!is_admin()) {
         wp_enqueue_script('jquery');
@@ -111,11 +105,11 @@ function abf_add_jquery()
         wp_register_style('abf-settings-style', plugins_url('assets/css/style-setting.css', __FILE__));
     }
 }
-add_action('init', 'abf_add_jquery');
+add_action('init', 'abfinder_add_jquery');
 
-add_filter('autoptimize_filter_js_exclude', 'abf_jquery_toggle');
+add_filter('autoptimize_filter_js_exclude', 'abfinder_jquery_toggle');
 
-function abf_jquery_toggle($in)
+function abfinder_jquery_toggle($in)
 {
     if (is_front_page() || strpos($_SERVER['REQUEST_URI'], 'test-page') !== false) {
         return $in . ', js/jquery/jquery.js';
@@ -124,7 +118,7 @@ function abf_jquery_toggle($in)
     }
 }
 
-function abf_locate_template($template_name, $template_path = '', $default_path = '')
+function abfinder_locate_template($template_name, $template_path = '', $default_path = '')
 {
     // Set variable to search in woocommerce-plugin-templates folder of theme.
     if (!$template_path) :
@@ -150,7 +144,7 @@ function abf_locate_template($template_name, $template_path = '', $default_path 
     return apply_filters('wcpt_locate_template', $template, $template_name, $template_path, $default_path);
 }
 
-function abf_get_template($template_name, $args = array(), $tempate_path = '', $default_path = '')
+function abfinder_get_template($template_name, $args = array(), $tempate_path = '', $default_path = '')
 {
     if (is_array($args) && isset($args)) :
         extract($args);
@@ -163,7 +157,7 @@ function abf_get_template($template_name, $args = array(), $tempate_path = '', $
     include $template_file;
 }
 
-function abf_vehicle_post_type()
+function abfinder_vehicle_post_type()
 {
     register_post_type(
         'vehicle',
@@ -193,7 +187,7 @@ function abf_vehicle_post_type()
 }
 
 if (get_option('enable_vehicle_post', 'false') == "true") {
-    add_action('init', 'abf_vehicle_post_type');
+    add_action('init', 'abfinder_vehicle_post_type');
 }
 
 final class ABFINDER
@@ -257,6 +251,7 @@ final class ABFINDER
         require_once ABFINDER_PLUGIN_FILE . 'helper/class-abfinder-database.php';
         require_once ABFINDER_PLUGIN_FILE . 'helper/class-abfinder-adaptions.php';
         require_once ABFINDER_PLUGIN_FILE . 'helper/class-abfinder-vehicles.php';
+        require_once ABFINDER_PLUGIN_FILE . 'includes/blocks/custom-block.php';
 
         if ($this->abfinder_is_request('frontend')) {
             wp_enqueue_script('jquery');
@@ -282,15 +277,13 @@ if (!function_exists('abfinder_create_table')) {
     register_activation_hook(__FILE__, array($schema_handler, 'init'));
 }
 
-require_once ABFINDER_PLUGIN_FILE . 'includes/blocks/custom-block.php';
-
-function abf_add_abfinder_ajax_actions()
+function abfinder_add_abfinder_ajax_actions()
 {
     add_action('wp_ajax_' . 'auto_bulb_finder', 'abfinder_ajax_function');
     add_action('wp_ajax_nopriv_' . 'auto_bulb_finder', 'abfinder_ajax_function');
 }
 
-add_action('init', 'abf_add_abfinder_ajax_actions');
+add_action('init', 'abfinder_add_abfinder_ajax_actions');
 
 function abfinder_ajax_function()
 {
@@ -351,48 +344,6 @@ if (!function_exists('is_woocommerce_activated')) {
         }
     }
 }
-
-//Get Product Button
-function get_flatsome_lightbox_button()
-{
-    if (get_theme_mod('disable_quick_view', 0)) {
-        return;
-    }
-
-    // Run Quick View Script.
-    wp_enqueue_script('wc-add-to-cart-variation');
-
-    global $product;
-    return '  <a target="_blank" class="quick-view primary is-small mb-0 button product_type_simple add_to_cart_button ajax_add_to_cart is-flat text_replaceable" data-prod="' . $product->get_id() . '" href="' . get_permalink($product->get_id()) . '">' . __('Buy Now', 'flatsome') . '</a>';
-}
-
-//Return quick view button for viariable product
-function flatsome_woocommerce_loop_add_to_cart_link_variable_quick_view($link, $product, $args)
-{
-    if (!doing_action('flatsome_product_box_actions') && !doing_action('flatsome_product_box_after')) {
-        return $link;
-    }
-
-    switch (get_theme_mod('add_to_cart_icon', 'disabled')) {
-        case 'show':
-            $insert = '<div class="cart-icon tooltip is-small" title="' . esc_html($product->add_to_cart_text()) . '"><strong>+</strong></div>';
-            $link   = preg_replace('/(<a.*?>).*?(<\/a>)/', '$1' . $insert . '$2', $link);
-            break;
-        case 'button':
-            if ($product->product_type == 'variable') {
-                $link = '<div class="add-to-cart-button"> ' . get_flatsome_lightbox_button() . '</div>';
-            } else {
-                $link = '<div class="add-to-cart-button">' . $link . '</div>';
-            }
-            break;
-        default:
-            return $link;
-    }
-
-    return $link;
-}
-
-add_filter('woocommerce_loop_add_to_cart_link', 'flatsome_woocommerce_loop_add_to_cart_link_variable_quick_view', 10, 3);
 
 if (!function_exists('str_contains')) {
     function str_contains($haystack, $needle)

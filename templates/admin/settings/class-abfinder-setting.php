@@ -64,7 +64,7 @@ defined('ABSPATH') || exit;
             <td>
                 <label>Promotion Content(Html or ShortCode)</label>
                 <?php
-                $content = get_option("app_promotion_html", get_default_app_promotion_html());
+                $content = get_option("app_promotion_html", abfinder_get_default_app_promotion_html());
                 $editor_id = 'app-promotion';
                 $settings = array(
                     'textarea_name' => 'app-promotion',

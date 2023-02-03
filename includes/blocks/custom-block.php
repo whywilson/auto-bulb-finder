@@ -1,5 +1,5 @@
 <?php
-function shortcode_auto_bulb_finder($atts = [], $content = null, $tag = '')
+function abfinder_shortcode_abf($atts = [], $content = null, $tag = '')
 {
     wp_register_style('chosen-css',  ABFINDER_PLUGIN_URL . 'assets/css/chosen.min.css');
     wp_register_script('chosen-js', ABFINDER_PLUGIN_URL . 'assets/js/chosen.jquery.min.js');
@@ -33,9 +33,9 @@ function getSizeAndProducIdByVid($vid = '', $year = '', $make = '', $model = '',
     return $result;
 }
 
-add_shortcode('abf', 'shortcode_auto_bulb_finder');
+add_shortcode('abf', 'abfinder_shortcode_abf');
 
-function shortcode_auto_bulb_finder_vehicle($atts = [], $content = null, $tag = '')
+function abfinder_shortcode_abf_vehicle($atts = [], $content = null, $tag = '')
 {
     $atts = array_change_key_case((array)$atts, CASE_LOWER);
     $bs_atts = shortcode_atts(
@@ -55,10 +55,10 @@ function shortcode_auto_bulb_finder_vehicle($atts = [], $content = null, $tag = 
     return $bs_atts['year'] . ' <> ' . $bs_atts['make'] . ' <> ' . $bs_atts['model'];
 }
 
-add_shortcode('abf_vehicle', 'shortcode_auto_bulb_finder_vehicle');
+add_shortcode('abf_vehicle', 'abfinder_shortcode_abf_vehicle');
 
-add_shortcode('abf_products', 'abf_products_shortcode');
-function abf_products_shortcode($atts)
+add_shortcode('abf_products', 'abfinder_products_shortcode');
+function abfinder_products_shortcode($atts)
 {
     $atts = shortcode_atts(array(
         'ids' => '',
@@ -129,9 +129,9 @@ add_filter('woocommerce_loop_add_to_cart_link', function ($array, $product) {
     );
 }, 10, 2);
 
-function abf_ux_builder_element()
+function abfinder_ux_builder_element()
 {
-    add_ux_builder_shortcode('abf_ux_shortcode', array(
+    add_ux_builder_shortcode('abfinder_ux_shortcode', array(
         'name'      => __('Auto Bulb Finder', 'auto-bulb-finder'),
         'category'  => __('Content'),
         'options' => array(
@@ -143,9 +143,9 @@ function abf_ux_builder_element()
         ),
     ));
 }
-add_action('ux_builder_setup', 'abf_ux_builder_element');
+add_action('ux_builder_setup', 'abfinder_ux_builder_element');
 
-function abf_ux_shortcode_func($atts)
+function abfinder_ux_shortcode_func($atts)
 {
     extract(shortcode_atts(array(
         'title'       => 'Find My Vehicle'
@@ -154,7 +154,7 @@ function abf_ux_shortcode_func($atts)
     wp_enqueue_script('abf-app-js');
     echo do_shortcode(force_balance_tags('[abf]' . $title . '[/abf]'));
 }
-add_shortcode('abf_ux_shortcode', 'abf_ux_shortcode_func');
+add_shortcode('abfinder_ux_shortcode', 'abfinder_ux_shortcode_func');
 
 if (!function_exists('is_woocommerce_activated')) {
     function is_woocommerce_activated()

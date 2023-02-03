@@ -22,13 +22,6 @@ if (!class_exists('ABFinder_Adaptions')) {
     // require_once ABFINDER_PLUGIN_FILE . 'helper/adaptions/class-abfinder-adaptions.php';
 }
 
-if (!function_exists('str_contains')) {
-    function str_contains($haystack, $needle)
-    {
-        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
-    }
-}
-
 if (!class_exists('ABFinder_Admin_Functions')) {
     /**
      * Admin functions class
@@ -54,14 +47,12 @@ if (!class_exists('ABFinder_Admin_Functions')) {
 
         public function auto_bulb_finder_admin_menu()
         {
-            $hook = add_menu_page('Auto Bulb Finder', 'Auto Bulb', 'manage_options', 'auto-bulb-finder', array($this, 'abfinder_config_menu'), ABFINDER_PLUGIN_URL . 'assets/images/lightbulb-fill.svg', 20);
+            add_menu_page('Auto Bulb Finder', 'Auto Bulb', 'manage_options', 'auto-bulb-finder', array($this, 'abfinder_config_menu'), ABFINDER_PLUGIN_URL . 'assets/images/lightbulb-fill.svg', 20);
             add_submenu_page('auto-bulb-finder', 'Adaptions', 'Adaptions', 'edit_pages', 'auto-bulb-finder-adaption', array($this, 'auto_bulb_finder_adaption_menu'));
             add_submenu_page('auto-bulb-finder', 'Vehicles', 'Vehicles', 'edit_pages', 'auto-bulb-finder-vehicle', array($this, 'auto_bulb_finder_adaption_menu'));
-
-            // add_action( "admin_print_styles-$hook", array( $this, 'auto_bulb_finder_admin_scripts' ) );
         }
 
-        function auto_bulb_finder_admin_scripts()
+        function abfinder_admin_script()
         {
             wp_enqueue_style('abf-settings-style');
         }

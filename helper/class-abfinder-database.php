@@ -348,7 +348,7 @@ class ABFinder_Database
 		return $json;
 	}
 
-	function get_token($code)
+	public function get_token($code)
 	{
 		$url = $this->base_url . 'getToken?';
 
@@ -381,7 +381,7 @@ class ABFinder_Database
 		return $json;
 	}
 
-	function revoke_token()
+	public function revoke_token()
 	{
 		delete_option('abf_code_status');
 		delete_option('abf_code_expired');
