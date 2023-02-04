@@ -47,9 +47,9 @@ if (!class_exists('ABFinder_Admin_Functions')) {
 
         public function auto_bulb_finder_admin_menu()
         {
-            add_menu_page('Auto Bulb Finder', 'Auto Bulb', 'manage_options', 'auto-bulb-finder', array($this, 'abfinder_config_menu'), ABFINDER_PLUGIN_URL . 'assets/images/lightbulb-fill.svg', 20);
-            add_submenu_page('auto-bulb-finder', 'Adaptions', 'Adaptions', 'edit_pages', 'auto-bulb-finder-adaption', array($this, 'auto_bulb_finder_adaption_menu'));
-            add_submenu_page('auto-bulb-finder', 'Vehicles', 'Vehicles', 'edit_pages', 'auto-bulb-finder-vehicle', array($this, 'auto_bulb_finder_adaption_menu'));
+            add_menu_page('Auto Bulb Finder', 'Auto Bulb', 'manage_options', 'auto-bulb-finder-for-wp-wc', array($this, 'abfinder_config_menu'), ABFINDER_PLUGIN_URL . 'assets/images/lightbulb-fill.svg', 20);
+            add_submenu_page('auto-bulb-finder-for-wp-wc', 'Adaptions', 'Adaptions', 'edit_pages', 'auto-bulb-finder-adaption', array($this, 'auto_bulb_finder_adaption_menu'));
+            add_submenu_page('auto-bulb-finder-for-wp-wc', 'Vehicles', 'Vehicles', 'edit_pages', 'auto-bulb-finder-vehicle', array($this, 'auto_bulb_finder_adaption_menu'));
         }
 
         function abfinder_admin_script()

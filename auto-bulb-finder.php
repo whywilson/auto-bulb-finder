@@ -3,7 +3,7 @@
 Plugin Name: Auto Bulb Finder for WP & WC
 Plugin URI:  https://auto.mtoolstec.com
 Description: Year/Make/Model/BodyType/Qualifer automoive bulb size querying system for vehicles from 1960 to 2022. Online database or custom vehicle list. Add to any page or content by a shortcode <code>[abf]</code>.
-Version:     2.4.6
+Version:     2.4.7
 Author:      MTools Tec
 Author URI:  https://shop.mtoolstec.com/about-us/
 License:     GPL
@@ -81,7 +81,7 @@ add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'abfinder_add_veh
 
 function abfinder_add_settings_link($links)
 {
-    return array_merge($links, array('<a href="' . admin_url('admin.php?page=auto-bulb-finder') . '">Settings</a>',));
+    return array_merge($links, array('<a href="' . admin_url('admin.php?page=auto-bulb-finder-for-wp-wc') . '">Settings</a>',));
 }
 
 function abfinder_add_adaptions_link($links)
@@ -298,7 +298,7 @@ function abfinder_ajax_function()
                 $output = $abfinderDb->query_similar_bulbs(sanitize_text_field($_REQUEST['search']));
                 break;
             case 'import_vehicles':
-                $output = $abfinderDb->import_vehicles(sanitize_file_name($_FILES['upload']['tmp_name']), sanitize_text_field($_REQUEST['overwrite']));
+                $output = $abfinderDb->import_vehicles($_FILES['upload']['tmp_name'], sanitize_text_field($_REQUEST['overwrite']));
                 break;
             case 'export_vehicles':
                 $output = $abfinderDb->export_vehicles(sanitize_text_field($_REQUEST['all']));

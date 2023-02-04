@@ -5,14 +5,14 @@ Donate link: https://auto.mtoolstec.com/donate
 Requires at least: 6.0
 Tested up to: 6.1.1
 Requires PHP: 7.4
-Stable tag: 2.4.6
+Stable tag: 2.4.7
 License: GPL v2
 License URI: https://auto.mtoolstec.com/license
 
 Online bulb size querying system for vehicles from 1960 to 2022. Super easy to check by Year/Make/Model. Add to any page or content by a shortcode [abf].
 
 == Description ==
-\"Auto Bulb Finder for WordPress\" is a plugin that allows users to search for car and all the headlights model based on the \"Year Make Model\" of the car. This plugin also supports binding products to specific headlight models and importing custom car data. The plugin makes it easy for users to find the right car headlight bulb for their vehicle, saving time and effort. Notice: The plugin provides Year/Make/Model search query from store database and online database. The online database requires a network connection to Auto Bulb Finder Server to get the vehicles information.
+Auto Bulb Finder for WordPress is a plugin that allows users to search for car and all the headlights model based on the Year Make Model of the car. This plugin also supports binding products to specific headlight models and importing custom car data. The plugin makes it easy for users to find the right car headlight bulb for their vehicle, saving time and effort. Notice: The plugin provides Year/Make/Model search query from store database and online database. The online database requires a network connection to Auto Bulb Finder Server to get the vehicles information.
 
 == Installation ==
 Upload the Auto Bulb Finder Plugin to your site. Add vehicles and adaptions and you\'re able to search automotive bulb size by Year/Make/Model from your store. 

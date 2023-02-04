@@ -399,13 +399,15 @@ class ABFinder_Database
 		return array('msg' => 'Saved', 'names' => $names, 'values' => $values);
 	}
 
-	public function import_vehicles($fileName)
+	public function import_vehicles($file)
 	{
-		$response = ['success' => false, 'file' => $fileName, 'data' => []];
-		$fileContent = file_get_contents($fileName);
+		$response = ['success' => false, 'file' => $file, 'data' => []];
+		$fileContent = file_get_contents($file);
+		$fileName = sanitize_file_name($file);
 
 		if (!$this->checkIfHeaderMatches($fileContent)) {
 			$response['msg'] = esc_html__('Template does not match.', 'auto-bulb-finder');
+			$response['fileName'] = $fileName;
 			$response['header'] = $this->getCsvHeader($fileContent);
 			return $response;
 		}

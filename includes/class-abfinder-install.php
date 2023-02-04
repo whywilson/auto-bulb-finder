@@ -65,8 +65,8 @@ if (!class_exists('ABFinder_Install')) {
                 array(
                     'auto_bulb' =>
                     array(
-                        'name'    => esc_html__('Auto Bulb', 'auto-bulb-finder'),
-                        'title'   => esc_html__('Auto Bulb', 'auto-bulb-finder'),
+                        'name'    => esc_html__('Auto Bulb', 'auto-bulb-finder-for-wp-wc'),
+                        'title'   => esc_html__('Auto Bulb', 'auto-bulb-finder-for-wp-wc'),
                         'content' => '[' . apply_filters('abfinder_auto_bulb_finder_shortcode', 'auto_bulb_finder') . ']',
                     ),
                 )
