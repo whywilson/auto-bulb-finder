@@ -59,9 +59,11 @@
     justify-content: flex-start;
 }
 
+#bulb_result .accordion-item .part-item {
+    font-size: 1em;
+}
 
-
-#bulb_result .poduct {
+#bulb_result .product {
     padding: 8px;
 }
 

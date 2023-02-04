@@ -104,7 +104,7 @@ jQuery(function ($) {
                                     bulb_result += data['html'];
                                     bulb_result += '</div>'
                                 } else {
-                                    bulb_result += '<h2 class="accordion-title accordion-title-no-inner" href="#"  style="text-transform: capitalize;text-align: left;" ><button class="toggle">'
+                                    bulb_result += '<h2 class="part-item accordion-title accordion-title-no-inner" href="#"  style="text-transform: capitalize;text-align: left;" ><button class="toggle">'
                                     bulb_result += '<i class="icon-arrow-right"></i>'
                                     bulb_result += '</button><span>' + replaceAll(location, '_', ' ') + '</span>'
                                     bulb_result += '<span class="abfinder-bulb-size">' + data['size'] + '</span>'

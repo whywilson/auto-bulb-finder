@@ -89,7 +89,6 @@ jQuery(function ($) {
 
     function save_settings() {
         appPromotionHtml = $('#app-promotion')[0].value
-        enableVehiclePost = $('#enable_vehicle_post')[0].checked
         searchResultPriority = $('#search-result-priority')[0].value
 
         loader.style.display = 'inline'
@@ -100,8 +99,8 @@ jQuery(function ($) {
             data: {
                 'action': 'auto_bulb_finder',
                 'fn': 'save_settings',
-                'names': ["app_promotion_html", "enable_vehicle_post", "abf_search_result_priority"],
-                'values': [appPromotionHtml, enableVehiclePost, searchResultPriority]
+                'names': ["abf_search_result_priority", "app_promotion_html"],
+                'values': [searchResultPriority, appPromotionHtml]
             },
             success: function (r) {
                 console.log(r)
@@ -126,14 +125,4 @@ jQuery(function ($) {
     }
 
     buttonSaveSetting.addEventListener("click", save_settings, false)
-
-    vehiclePostCheckbox = document.getElementById("enable_vehicle_post")
-    vehiclePostIntro = document.getElementById("vehiclePostTypeIntro");
-    vehiclePostCheckbox.addEventListener('change', e => {
-        if (e.target.checked) {
-            vehiclePostIntro.style.display = 'block'
-        } else {
-            vehiclePostIntro.style.display = 'none'
-        }
-    });
 });

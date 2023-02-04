@@ -19,7 +19,7 @@ if ( ! class_exists( 'ABFinder_Admin_Hooks' ) ) {
 		 * Admin end hooks construct
 		 */
 		public function __construct() {
-			require_once ABFINDER_PLUGIN_FILE . 'includes/admin/class-abfinder-admin-functions.php';
+			include_once ABFINDER_PLUGIN_FILE . 'includes/admin/class-abfinder-admin-functions.php';
 			$function_handler = new ABFinder_Admin_Functions();
 			add_action( 'admin_menu', array( $function_handler, 'auto_bulb_finder_admin_menu' ) );
 			add_action( 'admin_menu', array( $function_handler, 'abfinder_admin_script' ) );

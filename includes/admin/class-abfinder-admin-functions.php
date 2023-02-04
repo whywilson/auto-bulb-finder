@@ -81,7 +81,6 @@ if (!class_exists('ABFinder_Admin_Functions')) {
                                 }
                                 break;
                             case 'import_vehicles':
-                                // wp_enqueue_script('simpleUpload.js');
                                 $this->template_handler->abfinder_import_vehicle_html();
                                 break;
                             case 'export_vehicles':
