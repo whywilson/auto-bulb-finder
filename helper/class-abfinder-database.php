@@ -327,6 +327,11 @@ class ABFinder_Database
 			$query_result['key'] = empty($json['items']) ? $store_result['key'] : (array_key_exists('key', $json) ? $json['key'] : $store_result['key']);
 			$query_result['select'] = empty($json['items']) ? $store_result['select'] : (array_key_exists('select', $json) ? $json['select'] : $store_result['select']);
 			$query_result['defaultText'] = empty($json['items']) ? $store_result['defaultText'] : (array_key_exists('defaultText', $json) ? $json['defaultText'] : $store_result['defaultText']);
+			if(empty($json['items'])){
+				if(isset($json['defaultText'])){
+					$query_result['defaultText'] = $json['defaultText'];
+				}
+			}
 		}
 
 		return $query_result;
