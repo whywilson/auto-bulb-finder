@@ -24,7 +24,7 @@
     }
 }
 
-@media screen and (min-width: 550px){
+@media screen and (min-width: 550px) {
     #bulb_result .medium-columns-3>.col {
         flex-basis: 33.3333333333%;
         max-width: 33.3333333333%;
@@ -36,11 +36,12 @@
     max-width: 50%;
 }
 
-@media only screen and (min-width: 768px) {    
+@media only screen and (min-width: 768px) {
     #bulb_result .large-columns-5>.col {
         flex-basis: 20%;
         max-width: 20%;
     }
+
     #abf-block {
         padding: 10px;
     }
@@ -387,7 +388,6 @@ body {
 
 .abfinder-bulb-size {
     float: right;
-    margin: 10px 0;
 }
 
 .accordion-inner .slide-box .product {
@@ -398,6 +398,16 @@ body {
     display: flex;
     flex-flow: row wrap;
     width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    #abf-block .row {
+        display: block !important;
+    }
+
+    #abf-block .cell select{
+        width: 100%;
+    }
 }
 
 #bulb_result .toggle {
