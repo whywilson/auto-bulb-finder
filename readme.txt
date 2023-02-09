@@ -5,7 +5,7 @@ Donate link: https://auto.mtoolstec.com/donate
 Requires at least: 6.0
 Tested up to: 6.1.1
 Requires PHP: 7.4
-Stable tag: 2.5.1
+Stable tag: 2.5.2
 License: GPL v2
 License URI: https://auto.mtoolstec.com/license
 

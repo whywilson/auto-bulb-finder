@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Auto Bulb Finder for WP & WC
+Plugin Name: Auto Bulb Finder for WP & WC - Year/Make/Model
 Plugin URI:  https://auto.mtoolstec.com
 Description: Year/Make/Model/BodyType/Qualifer automoive bulb size querying system for vehicles from 1960 to 2022. Online database or custom vehicle list. Add to any page or content by a shortcode <code>[abf]</code>.
-Version:     2.5.1
+Version:     2.5.2
 Author:      MTools Tec
 Author URI:  https://shop.mtoolstec.com/about-us/
 License:     GPL
@@ -68,7 +68,7 @@ function abfinder_plugin_deactive()
 
 function abfinder_get_default_app_promotion_html()
 {
-    return ' <hr class="solid" style="margin-bottom: 12px">  <p>Get Full Bulb Size on Auto Bulb Finder App.</p>  <p style="text-align: left;"> <a class="bullet-btn" style="background-image: linear-gradient(#3bc5ff, #5c8feb); color: white;" href="https://apps.apple.com/us/app/anyvalue/id1547269180" target="_blank" rel="noopener">App Store</a> <a class="bullet-btn" style="background-image: linear-gradient(#0FBEFC, #19E46C); color: white;" href="https://play.google.com/store/apps/details?id=com.automotive.mtools&hl=en_US&gl=US" target="_blank" rel="noopener">Play Store</a>  </p>  <style type="text/css"> .bullet-btn { border-radius: 20px; border-width: 2px; padding: 4px 12px; color: white; background-color: dodgerblue; text-decoration: none }  </style>';
+    return ' <hr class="solid" style="margin-bottom: 12px"> ';
 }
 
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'abfinder_add_settings_link');
@@ -347,3 +347,21 @@ if (!function_exists('str_contains')) {
         return $needle !== '' && mb_strpos($haystack, $needle) !== false;
     }
 }
+
+function abfinder_plugin_meta_links( $links, $file ) {
+
+	$plugin_file = 'auto-bulb-finder-for-wp-wc/auto-bulb-finder.php';
+	if ( $file == $plugin_file ) {
+		return array_merge(
+			$links,
+			array(
+				'<a target="_blank" href="https://shop.mtoolstec.com/product/auto-bulb-finder-plugin-for-woocommerce" style="color: red">' . __( 'License', 'auto-bulb-finder') . '</a>',
+                '<a target="_blank" href="https://shop.mtoolstec.com/auto-bulb-finder-plugin" style="color: green">' . __( 'Demo', 'auto-bulb-finder') . '</a>',
+			)
+		);
+	}
+
+	return $links;
+
+}
+add_filter( 'plugin_row_meta', 'abfinder_plugin_meta_links', 10, 2 );
