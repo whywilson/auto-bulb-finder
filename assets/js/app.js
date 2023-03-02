@@ -237,41 +237,9 @@ jQuery(function ($) {
         );
     }
 
-    var introduction = jQuery("#introduction")[0]
-    if (introduction && introduction.innerHTML.length > 0) {
-        jQuery("#introduction")[0].style.display = "block"
-    }
-
-    var videos = jQuery("#videos")[0]
-    if (videos && videos.innerHTML.length > 20) {
-        jQuery("#videos")[0].style.display = "block"
-    }
-
-    var bulb_result = jQuery("#bulb_result")[0]
-    if (bulb_result && bulb_result.innerHTML.length > 20) {
-        jQuery("#bulb_result")[0].style.display = "block"
-    }
-
-    var reviews = jQuery("#reviews")[0]
-    if (reviews && reviews.innerHTML.length > 20) {
-        jQuery("#reviews")[0].style.display = "block"
-    }
-
-    var promotion = jQuery("#promotion")[0]
-    if (promotion && promotion.innerHTML.length > 20) {
-        promotion.style.display = "block"
-    }
-
     function removeAllChildNodes(parent) {
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
-        }
-    }
-
-    function removeAllChildByClass(className) {
-        const node = document.getElementsByClassName(className)
-        for (var i = 0; i < node.length; i++) {
-            node[i].textContent = ''
         }
     }
 
@@ -319,40 +287,3 @@ jQuery(function ($) {
     });
     fetchSelect('');
 });
-
-function getProductQuickView(product) {
-    jQuery(".accordion-title").each(function () {
-        jQuery(function ($) {
-            $.ajax({
-                url: window.location.origin + "/wp-admin/admin-ajax.php",
-                type: 'POST',
-                data: {
-                    'action': 'flatsome_quickview',
-                    'product': product
-                },
-                success: function (r) {
-                    var modal = document.getElementById("quick-view-modal");
-                    var modalProduct = document.getElementById("modal-content-product");
-                    modalProduct.innerHTML = r
-                    var span = document.getElementsByClassName("close")[0];
-                    span.onclick = function () {
-                        modal.style.display = "none";
-                    }
-                    window.onclick = function (event) {
-                        if (event.target == modal) {
-                            modal.style.display = "none";
-                        }
-                    }
-                    modal.style.display = "block";
-                },
-                complete: function () {
-                    $('#preloader').delay(800).hide();
-                },
-                error: function (r) {
-                    console.log('error: ' + r)
-                    $('#preloader').delay(800).hide();
-                }
-            })
-        });
-    })
-}

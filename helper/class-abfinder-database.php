@@ -327,8 +327,8 @@ class ABFinder_Database
 			$query_result['key'] = empty($json['items']) ? $store_result['key'] : (array_key_exists('key', $json) ? $json['key'] : $store_result['key']);
 			$query_result['select'] = empty($json['items']) ? $store_result['select'] : (array_key_exists('select', $json) ? $json['select'] : $store_result['select']);
 			$query_result['defaultText'] = empty($json['items']) ? $store_result['defaultText'] : (array_key_exists('defaultText', $json) ? $json['defaultText'] : $store_result['defaultText']);
-			if(empty($json['items'])){
-				if(isset($json['defaultText'])){
+			if (empty($json['items'])) {
+				if (isset($json['defaultText'])) {
 					$query_result['defaultText'] = $json['defaultText'];
 				}
 			}
@@ -404,6 +404,51 @@ class ABFinder_Database
 		return array('msg' => 'Saved', 'names' => $names, 'values' => $values);
 	}
 
+	public function import_adaptions($file)
+	{
+		$response = ['success' => false, 'file' => $file, 'data' => []];
+		$fileContent = file_get_contents($file);
+		$fileName = sanitize_file_name($file);
+
+		if (!$this->checkIfHeaderMatches($fileContent, 'adaptions-template.csv')) {
+			$response['msg'] = esc_html__('Template does not match.', 'auto-bulb-finder');
+			$response['fileName'] = $fileName;
+			$response['header'] = $this->getCsvHeader($fileContent);
+			return $response;
+		}
+		$adaptions = $this->getAdaptionCsvContent($fileContent);
+		$helper = new ABFinder_Adaptions();
+		$update = 0;
+		$save = 0;
+		$error = 0;
+		foreach ($adaptions as $adaption) {
+			try {
+				$existAdaption = $helper->get_adaption_id($adaption['size']);
+				if (!empty($existAdaption)) {
+					$helper->abfinder_save_adaption($adaption, $existAdaption[0]['id']);
+					$update++;
+				} else {
+					$helper->abfinder_save_adaption($adaption);
+					$save++;
+				}
+			} catch (\Throwable $th) {
+				$error++;
+			}
+		}
+		$response['success'] = true;
+		$response['data'] = [
+			'update' => $update,
+			'save' => $save,
+			'error' => $error,
+			'fileName' => $fileName,
+			'fileContent' => $fileContent,
+		];
+
+		//show imported result with update, save, error count
+		$response['msg'] = "Imported Done. " . $update . " updated, " . $save . " saved, " . $error . " error.";
+		return $response;
+	}
+
 	public function import_vehicles($file)
 	{
 		$response = ['success' => false, 'file' => $file, 'data' => []];
@@ -416,7 +461,7 @@ class ABFinder_Database
 			$response['header'] = $this->getCsvHeader($fileContent);
 			return $response;
 		}
-		$vehicles = $this->getCsvContent($fileContent);
+		$vehicles = $this->getVehicleCsvContent($fileContent);
 		$helper = new ABFinder_Vehicles();
 		$update = 0;
 		$save = 0;
@@ -441,6 +486,26 @@ class ABFinder_Database
 		return $response;
 	}
 
+	public function export_adaptions()
+	{
+		$export = ['success' => false, 'data' => []];
+		try {
+			$adaptions = new ABFinder_Adaptions();
+			$adaptions = $adaptions->abfinder_get_adaptions();
+			if ($adaptions) {
+				$export = [
+					'success' => true,
+					'name' => 'abf_adaption_export_' . date('Y-m-d') . '_' . time() . '.csv',
+					'content' => $this->exportAdaptionContent($adaptions)
+				];
+			}
+		} catch (\Throwable $th) {
+			$export['msg'] = $th->getMessage();
+		}
+
+		return $export;
+	}
+
 	public function export_vehicles($include)
 	{
 		$export = ['success' => false, 'data' => []];
@@ -457,6 +522,16 @@ class ABFinder_Database
 		return $export;
 	}
 
+	private function exportAdaptionContent($adaptions)
+	{
+		$csv = $this->getExpectedHeader( 'adaptions-template.csv' ) . "\n";
+		foreach ($adaptions as $adaption) {
+			// $csv .= $adaption['name']. ',"' . $adaption['size'] . '",' . ($adaption->status == 0 ? 'include' : 'exclude') . "\n";
+			//add name, size, products, fits_on, status
+			$csv .= $adaption['name'] . ',"' . $adaption['size'] . '","' . $adaption['products'] . '","' . $adaption['fits_on'] . '",' . ($adaption['status'] == 0 ? 'include' : 'exclude') . "\n";
+		}
+		return $csv;
+	}
 	private function exportVehicleContent($vehicles)
 	{
 		$csv = $this->getExpectedHeader() . "\n";
@@ -468,11 +543,34 @@ class ABFinder_Database
 
 	private function getCsvHeader($content, $split = PHP_EOL)
 	{
-		$vehicles = explode($split, $content);
-		return trim($vehicles[0]);
+		$rows = explode($split, $content);
+		return trim($rows[0]);
 	}
 
-	private function getCsvContent($content, $split = PHP_EOL)
+	private function getAdaptionCsvContent($content, $split = PHP_EOL)
+	{
+		$rows = explode($split, $content);
+		unset($rows[0]);
+		$adaptions = [];
+		foreach ($rows as $row) {
+			//get adaption_columns, explode by comma, but notice that do not explode if comma is inside double quotes
+			$adaption_columns = preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', trim($row));
+			if (count($adaption_columns) < 5) continue;
+			$adaption_columns = array_map(function ($item) {
+				return str_replace('"', '', $item);
+			}, $adaption_columns);
+
+			$adaptions[] = [
+				'name' => $adaption_columns[0],
+				'size' => $adaption_columns[1],
+				'products' => $adaption_columns[2],
+				'fits_on' => $adaption_columns[3],
+				'status' => strtolower($adaption_columns[4]) == 'include' ? 0 : 1
+			];
+		}
+		return $adaptions;
+	}
+	private function getVehicleCsvContent($content, $split = PHP_EOL)
 	{
 		$rows = explode($split, $content);
 		unset($rows[0]);
@@ -494,19 +592,18 @@ class ABFinder_Database
 		return $vehicles;
 	}
 
-	private function checkIfHeaderMatches($content)
+	private function checkIfHeaderMatches($content, $template_name = 'vehicles-template.csv')
 	{
 		$header = $this->getCsvHeader($content);
-		$expectedHeader = $this->getExpectedHeader();
+		$expectedHeader = $this->getExpectedHeader($template_name);
 		return $header == $expectedHeader;
 	}
 
-	private function getExpectedHeader()
+	private function getExpectedHeader($template_name = 'vehicles-template.csv')
 	{
-		$templateContent = file_get_contents(ABFINDER_PLUGIN_FILE . 'assets/templates/vehicles-template.csv');
+		$templateContent = file_get_contents(ABFINDER_PLUGIN_FILE . 'assets/templates/' . $template_name);
 		return $this->getCsvHeader($templateContent);
 	}
-
 	public function download_template()
 	{
 	}

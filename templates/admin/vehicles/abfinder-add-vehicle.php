@@ -24,6 +24,7 @@ $abfinder_vehicle_bodytype = '';
 $abfinder_vehicle_qualifier = '';
 $abfinder_vehicle_bulb_size = '';
 $abfinder_status = '0';
+$id = isset($_GET['id']) ? sanitize_text_field($_GET['id']) : '';
 if ($id) {
 	$vehicle_data = $helper->abfinder_get_vehicle(intval($id));
 	if (!empty($vehicle_data)) {
@@ -36,6 +37,14 @@ if ($id) {
 		$abfinder_vehicle_bulb_size = $vehicle_data->bulb_size;
 		$abfinder_status = $vehicle_data->status;
 	}
+}else{
+	$abfinder_vehicle_year = isset($_POST['abfinder_vehicle_year']) ? sanitize_text_field($_POST['abfinder_vehicle_year']) : '';
+	$abfinder_vehicle_make = isset($_POST['abfinder_vehicle_make']) ? sanitize_text_field($_POST['abfinder_vehicle_make']) : '';
+	$abfinder_vehicle_model = isset($_POST['abfinder_vehicle_model']) ? sanitize_text_field($_POST['abfinder_vehicle_model']) : '';
+	$abfinder_vehicle_submodel = isset($_POST['abfinder_vehicle_submodel']) ? sanitize_text_field($_POST['abfinder_vehicle_submodel']) : '';
+	$abfinder_vehicle_bodytype = isset($_POST['abfinder_vehicle_bodytype']) ? sanitize_text_field($_POST['abfinder_vehicle_bodytype']) : '';
+	$abfinder_vehicle_qualifier = isset($_POST['abfinder_vehicle_qualifier']) ? sanitize_text_field($_POST['abfinder_vehicle_qualifier']) : '';
+	$abfinder_vehicle_bulb_size = isset($_POST['abfinder_vehicle_bulb_size']) ? sanitize_text_field($_POST['abfinder_vehicle_bulb_size']) : '';
 }
 
 $status_list = array(
@@ -46,7 +55,13 @@ $status_list = array(
 
 <div class="wrap">
 	<h1 class="wp-heading-inline">
-		<?php echo esc_html__($id ? 'Edit Vehicle' : 'Add Vehicle', 'auto-bulb-finder'); ?>
+		<?php
+		if ($id) {
+			echo esc_html__('Edit Vehicle', 'auto-bulb-finder');
+		} else {
+			echo esc_html__('Add Vehicle', 'auto-bulb-finder');
+		}
+		?>
 	</h1>
 	<a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-vehicle')); ?>" class="page-title-action"><?php echo esc_html__('Back', 'auto-bulb-finder'); ?></a>
 	<hr />
@@ -59,9 +74,6 @@ $status_list = array(
 						<label><?php echo esc_html__('Year', 'auto-bulb-finder'); ?></label>
 						<span class="required">*</span>
 					</th>
-					<?php
-					$abfinder_vehicle_year = isset($_POST['abfinder_vehicle_year']) ? sanitize_text_field($_POST['abfinder_vehicle_year']) : '';
-					?>
 					<td>
 						<input type="text" name="abfinder_vehicle_year" id="abfinder-vehicle-name" class="abf-vehicle-item" value="<?php echo esc_attr($abfinder_vehicle_year); ?>" />
 					</td>
@@ -71,9 +83,6 @@ $status_list = array(
 						<label><?php echo esc_html__('Make', 'auto-bulb-finder'); ?></label>
 						<span class="required">*</span>
 					</th>
-					<?php
-					$abfinder_vehicle_make = isset($_POST['abfinder_vehicle_make']) ? sanitize_text_field($_POST['abfinder_vehicle_make']) : '';
-					?>
 					<td>
 						<input type="text" name="abfinder_vehicle_make" class="abf-vehicle-item" value="<?php echo esc_attr($abfinder_vehicle_make); ?>" />
 					</td>
@@ -83,9 +92,6 @@ $status_list = array(
 						<label><?php echo esc_html__('Model', 'auto-bulb-finder'); ?></label>
 						<span class="required">*</span>
 					</th>
-					<?php
-					$abfinder_vehicle_model = isset($_POST['abfinder_vehicle_model']) ? sanitize_text_field($_POST['abfinder_vehicle_model']) : '';
-					?>
 					<td>
 						<input type="text" name="abfinder_vehicle_model" class="abf-vehicle-item" value="<?php echo esc_attr($abfinder_vehicle_model); ?>" />
 					</td>
@@ -94,9 +100,6 @@ $status_list = array(
 					<th>
 						<label><?php echo esc_html__('Submodel', 'auto-bulb-finder'); ?></label>
 					</th>
-					<?php
-					$abfinder_vehicle_submodel = isset($_POST['abfinder_vehicle_submodel']) ? sanitize_text_field($_POST['abfinder_vehicle_submodel']) : '';
-					?>
 					<td>
 						<input type="text" name="abfinder_vehicle_submodel" class="abf-vehicle-item" value="<?php echo esc_attr($abfinder_vehicle_submodel); ?>" />
 					</td>
@@ -105,9 +108,6 @@ $status_list = array(
 					<th>
 						<label><?php echo esc_html__('Body Type', 'auto-bulb-finder'); ?></label>
 					</th>
-					<?php
-					$abfinder_vehicle_bodytype = isset($_POST['abfinder_vehicle_bodytype']) ? sanitize_text_field($_POST['abfinder_vehicle_bodytype']) : '';
-					?>
 					<td>
 						<input type="text" name="abfinder_vehicle_bodytype" class="abf-vehicle-item" value="<?php echo esc_attr($abfinder_vehicle_bodytype); ?>" />
 					</td>
@@ -116,9 +116,6 @@ $status_list = array(
 					<th>
 						<label><?php echo esc_html__('Qualifier', 'auto-bulb-finder'); ?></label>
 					</th>
-					<?php
-					$abfinder_vehicle_qualifier = isset($_POST['abfinder_vehicle_qualifier']) ? sanitize_text_field($_POST['abfinder_vehicle_qualifier']) : '';
-					?>
 					<td>
 						<input type="text" name="abfinder_vehicle_qualifier" class="abf-vehicle-item" value="<?php echo esc_attr($abfinder_vehicle_qualifier); ?>" />
 					</td>
@@ -128,9 +125,6 @@ $status_list = array(
 						<label for="abfinder-adaption-bulb-size"><?php echo esc_html__('Bulb Size', 'auto-bulb-finder'); ?></label>
 						<span class="required">*</span>
 					</th>
-					<?php
-					$abfinder_vehicle_bulb_size = isset($_POST['abfinder_vehicle_bulb_size']) ? sanitize_text_field($_POST['abfinder_vehicle_bulb_size']) : '';
-					?>
 					<td>
 						<textarea type="text" placeholder="eg: Fog Light:H11;Brack Light:194" name="abfinder_vehicle_bulb_size" id="abfinder-adaption-bulb-size" class="bulb-size-textarea" rows="6" cols="32"><?php echo esc_attr($abfinder_vehicle_bulb_size); ?></textarea>
 					</td>

@@ -241,8 +241,8 @@ if (!class_exists('ABFinder_Adaptions_List')) {
         {
             $item_json = json_decode(json_encode($item), true);
             $actions = array(
-                'edit'   => sprintf('<a href="admin.php?page=auto-bulb-finder-adaption&action=edit&aid=%d">' . esc_html__('Edit', 'auto-bulb-finder') . '</a>', $item['id']),
-                'delete' => sprintf('<a href="admin.php?page=auto-bulb-finder-adaption&action=delete&aid=%d&_abfinder_nonce=%s">' . esc_html__('Delete', 'auto-bulb-finder') . '</a>', $item['id'], wp_create_nonce('abfinder-list-action-nonce')),
+                'edit'   => sprintf('<a href="admin.php?page=auto-bulb-finder-adaption&action=edit&id=%d">' . esc_html__('Edit', 'auto-bulb-finder') . '</a>', $item['id']),
+                'delete' => sprintf('<a href="admin.php?page=auto-bulb-finder-adaption&action=delete&id=%d&_abfinder_nonce=%s">' . esc_html__('Delete', 'auto-bulb-finder') . '</a>', $item['id'], wp_create_nonce('abfinder-list-action-nonce')),
             );
             return '<em>' . sprintf('%s %s', $item_json['name'], $this->row_actions($actions)) . '</em>';
         }
@@ -254,9 +254,9 @@ if (!class_exists('ABFinder_Adaptions_List')) {
         {
             if (isset($_REQUEST['action'])) {
                 if ('delete' === $_REQUEST['action']) {
-                    if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aid = wp_unslash($this->sanitize_id_array($_REQUEST['aid']));
-                        $result = $this->helper->abfinder_delete_adaption($aid);
+                    if (isset($_REQUEST['id']) && !empty($_REQUEST['id'])) {
+                        $id = wp_unslash($this->sanitize_id_array($_REQUEST['id']));
+                        $result = $this->helper->abfinder_delete_adaption($id);
                         if ($result) {
                 ?>
                             <div class="notice notice-success is-dismissible">
@@ -278,9 +278,9 @@ if (!class_exists('ABFinder_Adaptions_List')) {
                         <?php
                     }
                 } elseif ('disable' === $_REQUEST['action']) {
-                    if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aid = wp_unslash($this->sanitize_id_array($_REQUEST['aid']));
-                        $result = $this->helper->abfinder_disable_adaption($aid);
+                    if (isset($_REQUEST['id']) && !empty($_REQUEST['id'])) {
+                        $id = wp_unslash($this->sanitize_id_array($_REQUEST['id']));
+                        $result = $this->helper->abfinder_disable_adaption($id);
                         if ($result) {
                         ?>
                             <div class="notice notice-success is-dismissible">
@@ -302,9 +302,9 @@ if (!class_exists('ABFinder_Adaptions_List')) {
                         <?php
                     }
                 } elseif ('enable' === $_REQUEST['action']) {
-                    if (isset($_REQUEST['aid']) && !empty($_REQUEST['aid'])) {
-                        $aid = wp_unslash($this->sanitize_id_array($_REQUEST['aid']));
-                        $result = $this->helper->abfinder_enable_adaption($aid);
+                    if (isset($_REQUEST['id']) && !empty($_REQUEST['id'])) {
+                        $id = wp_unslash($this->sanitize_id_array($_REQUEST['id']));
+                        $result = $this->helper->abfinder_enable_adaption($id);
                         if ($result) {
                         ?>
                             <div class="notice notice-success is-dismissible">
@@ -356,7 +356,7 @@ if (!class_exists('ABFinder_Adaptions_List')) {
         {
             /* translators: %s: adaption status. */
             return sprintf(
-                '<input type="checkbox" name="aid[]" value="%s" />',
+                '<input type="checkbox" name="id[]" value="%s" />',
                 $item['id']
             );
         }

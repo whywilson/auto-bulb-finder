@@ -21,8 +21,8 @@ $abfinder_adaption_products = '';
 $abfinder_adaption_fits_on = '';
 $abfinder_status = '0';
 
-if ($aid) {
-	$adaption_data = $helper->abfinder_get_adaption(intval($aid));
+if ($id) {
+	$adaption_data = $helper->abfinder_get_adaption(intval($id));
 	if (!empty($adaption_data)) {
 		$abfinder_adaption_name = $adaption_data->name;
 		$abfinder_adaption_size = $adaption_data->size;
@@ -41,7 +41,13 @@ $status_list = array(
 
 <div class="wrap">
 	<h1 class="wp-heading-inline">
-		<?php echo esc_html__('Add Adaption', 'auto-bulb-finder'); ?>
+		<?php
+		if ($id) {
+			echo esc_html__('Edit Adaption', 'auto-bulb-finder');
+		} else {
+			echo esc_html__('Add Adaption', 'auto-bulb-finder');
+		}
+		?>
 	</h1>
 	<a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-adaption')); ?>" class="page-title-action"><?php echo esc_html__('Back', 'auto-bulb-finder'); ?></a>
 	<hr />
@@ -155,10 +161,10 @@ $status_list = array(
 			</tbody>
 		</table>
 
-		<input type="hidden" name="e_id" value="<?php echo esc_attr($aid); ?>" />
+		<input type="hidden" name="e_id" value="<?php echo esc_attr($id); ?>" />
 
 		<?php
-		if (!empty($aid)) {
+		if (!empty($id)) {
 			wp_nonce_field('abfinder_adaption_nonce_action', 'abfinder_adaption_nonce');
 			submit_button(esc_html__('Update to Auto Bulb Finder', 'auto-bulb-finder'), 'primary', 'update_adaption');
 		} else {

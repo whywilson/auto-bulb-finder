@@ -35,11 +35,13 @@ if (!class_exists('abfinder_Admin_Templates')) {
          */
         public function abfinder_adaption_list_html()
         {
-            require 'adaptions/class-abfinder-adaptions-list.php';
+            require_once 'adaptions/class-abfinder-adaptions-list.php';
             $_obj = new ABFinder_Adaptions_List(); ?>
             <div class="wrap abfinder-products">
                 <h1 class="wp-heading-inline">Product Adaptions</h1>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-adaption&action=add')); ?>" class="page-title-action">Add Adaption</a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-adaption&action=add')); ?>" class="page-title-action">Add</a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-adaption&action=import')); ?>" class="page-title-action">Import</a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-adaption&action=export')); ?>" class="page-title-action">Export</a>
                 <form method="post">
                     <?php
                     $_obj->prepare_items();
@@ -53,10 +55,10 @@ if (!class_exists('abfinder_Admin_Templates')) {
         /**
          * Add manager form
          *
-         * @param Integer $aid .
+         * @param Integer $id .
          * @return void .
          */
-        public function abfinder_add_adaption_html($aid = '')
+        public function abfinder_add_adaption_html($id = '')
         {
             if (isset($_POST['save_adaption']) || isset($_POST['update_adaption'])) {
                 if (!isset($_POST['abfinder_adaption_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['abfinder_adaption_nonce'])), 'abfinder_adaption_nonce_action')) {  // input var okay.
@@ -66,7 +68,7 @@ if (!class_exists('abfinder_Admin_Templates')) {
                     </div>
                 <?php
                 } else {
-                    do_action('abfinder_add_adaption', $_POST, $aid);
+                    do_action('abfinder_add_adaption', $_POST, $id);
                 }
             }
             require 'adaptions/abfinder-add-adaption.php';
@@ -96,9 +98,9 @@ if (!class_exists('abfinder_Admin_Templates')) {
             $_obj = new ABFinder_Vehicles_List(); ?>
             <div class="wrap abfinder-vehicles">
                 <h1 class="wp-heading-inline">Vehicles</h1>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-vehicle&action=add')); ?>" class="page-title-action">Add Vehicle</a>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-vehicle&action=import_vehicles')); ?>" class="page-title-action">Import</a>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-vehicle&action=export_vehicles')); ?>" class="page-title-action">Export</a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-vehicle&action=add')); ?>" class="page-title-action">Add</a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-vehicle&action=import')); ?>" class="page-title-action">Import</a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=auto-bulb-finder-vehicle&action=export')); ?>" class="page-title-action">Export</a>
                 <div class="abfinder-debug-mode" style="display: none;">
                     <label for="abfinder-debug-mode">Debug Mode</label>
                     <input type="checkbox" name="abfinder-debug-mode" id="abfinder-debug-mode" <?php echo (get_option('abfinder_debug_mode') == 'on') ? 'checked' : ''; ?>>
@@ -112,6 +114,18 @@ if (!class_exists('abfinder_Admin_Templates')) {
                 </form>
             </div>
 <?php
+        }
+
+        // Adaption Import
+        public function abfinder_import_adaption_html()
+        {
+            require 'adaptions/abfinder-import-adaption.php';
+        }
+
+        // Adaption Export
+        public function abfinder_export_adaption_html()
+        {
+            require 'adaptions/abfinder-export-adaption.php';
         }
 
         // Vehicle Import

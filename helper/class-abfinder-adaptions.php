@@ -75,23 +75,24 @@ if (!class_exists('ABFinder_Adaptions')) {
          * Save Adaption Data
          *
          * @param [type] $data array.
-         * @param [type] $aid array.
+         * @param [type] $id array.
          * @return $response boolean
          */
-        public function abfinder_save_adaption($data = array(), $aid = '')
+        public function abfinder_save_adaption($data = array(), $id = '')
         {
             $response = false;
 
-            if (!empty($aid)) {
+            if (!empty($id)) {
+                $id = intval($id);
                 $sql = $this->wpdb->update(
                     $this->table_name,
                     $data,
                     array(
-                        'id' => $aid,
+                        'id' => $id,
                     )
                 );
 
-                $insert_id = $aid;
+                $insert_id = $id;
                 $response = true;
             } else {
                 $sql = $this->wpdb->insert(
@@ -109,12 +110,12 @@ if (!class_exists('ABFinder_Adaptions')) {
             return $response;
         }
 
-        public function abfinder_get_adaption($aid)
+        public function abfinder_get_adaption($id)
         {
             $response = false;
 
-            if (!empty($aid)) {
-                $sql = $this->wpdb->get_row($this->wpdb->prepare("SELECT * from $this->table_name where id=%d", $aid));
+            if (!empty($id)) {
+                $sql = $this->wpdb->get_row($this->wpdb->prepare("SELECT * from $this->table_name where id=%d", $id));
 
                 $response = $sql ? $sql : false;
             }
@@ -128,16 +129,14 @@ if (!class_exists('ABFinder_Adaptions')) {
          *
          * @return $response array
          */
-        public function abfinder_get_adaptions()
+        public function abfinder_get_adaptions($include = 1)
         {
             $response = array();
-            $sql = $this->wpdb->get_results("SELECT DISTINCT id from {$this->table_name} where status = 0 ", ARRAY_A);
+            $condition = $include == 1 ? '' : 'status = 0';
+            $sql = $this->wpdb->get_results("SELECT * from {$this->table_name} " . $condition . " order by id", ARRAY_A);
 
             if (!empty($sql)) {
-                $adaptions_id = wp_list_pluck($sql, 'id');
-                foreach ($adaptions_id as $adaptions) {
-                    array_push($response, $adaptions);
-                }
+                $response = $sql;
             }
 
             return $response;
@@ -183,54 +182,63 @@ if (!class_exists('ABFinder_Adaptions')) {
             return apply_filters('abfinder_allocated_adaptions', $result);
         }
 
-        public function abfinder_enable_adaption($aid)
+        public function abfinder_enable_adaption($id)
         {
             $response = false;
-            if (!empty($aid)) {
-                if (is_array($aid)) {
-                    $aid = $aid;
+            if (!empty($id)) {
+                if (is_array($id)) {
+                    $id = $id;
                 } else {
-                    $aid = array($aid);
+                    $id = array($id);
                 }
 
-                $aid_str = implode(',', $aid);
-                $this->wpdb->query("UPDATE $this->table_name SET status = 0 WHERE id IN ( $aid_str )");
+                $id_str = implode(',', $id);
+                $this->wpdb->query("UPDATE $this->table_name SET status = 0 WHERE id IN ( $id_str )");
                 $response = true;
             }
 
             return $response;
         }
 
-        public function abfinder_disable_adaption($aid)
+        public function get_adaption_id($size = ""){
+            $response = array();
+            $sql = $this->wpdb->get_results("SELECT id from {$this->table_name} where size = '" . $size . "'", ARRAY_A);
+            if (!empty($sql)) {
+                $response = $sql;
+            }
+            return $response;
+        }
+
+        public function abfinder_disable_adaption($id)
         {
             $response = false;
-            if (!empty($aid)) {
-                if (is_array($aid)) {
-                    $aid = $aid;
+            if (!empty($id)) {
+                if (is_array($id)) {
+                    $id = $id;
                 } else {
-                    $aid = array($aid);
+                    $id = array($id);
                 }
 
-                $aid_str = implode(',', $aid);
-                $this->wpdb->query("UPDATE $this->table_name SET status = 1 WHERE id IN ( $aid_str )");
+                $id_str = implode(',', $id);
+                $this->wpdb->query("UPDATE $this->table_name SET status = 1 WHERE id IN ( $id_str )");
                 $response = true;
             }
 
             return $response;
         }
 
-        public function abfinder_delete_adaption($aid)
+        public function abfinder_delete_adaption($id)
         {
             $response = false;
-            if (!empty($aid)) {
-                if (is_array($aid)) {
-                    $aid = $aid;
+            if (!empty($id)) {
+                if (is_array($id)) {
+                    $id = $id;
                 } else {
-                    $aid = array($aid);
+                    $id = array($id);
                 }
 
-                $aid_str = implode(',', $aid);
-                $this->wpdb->query("DELETE FROM $this->table_name WHERE id IN ( $aid_str )");
+                $id_str = implode(',', $id);
+                $this->wpdb->query("DELETE FROM $this->table_name WHERE id IN ( $id_str )");
                 $response = true;
             }
 

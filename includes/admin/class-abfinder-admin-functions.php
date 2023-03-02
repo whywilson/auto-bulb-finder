@@ -61,12 +61,28 @@ if (!class_exists('ABFinder_Admin_Functions')) {
         {
             if (isset($_GET['page'])) {
                 if ('auto-bulb-finder-adaption' === $_GET['page']) {
-                    if (isset($_GET['action']) && 'add' === $_GET['action']) {
-                        $this->template_handler->abfinder_add_adaption_html();
-                    } elseif (isset($_GET['action']) && 'edit' === $_GET['action'] && isset($_GET['aid']) && !empty($_GET['aid'])) {
-                        $aid = intval($_GET['aid']);
-                        $this->template_handler->abfinder_add_adaption_html($aid);
-                    } else {
+                    if (isset($_GET['action'])) {
+                        switch ($_GET['action']) {
+                            case 'add':
+                                $this->template_handler->abfinder_add_adaption_html();
+                                break;
+                            case 'edit':
+                                if (isset($_GET['id']) && !empty($_GET['id'])) {
+                                    $id = intval($_GET['id']);
+                                    $this->template_handler->abfinder_add_adaption_html($id);
+                                }
+                                break;
+                            case 'import':
+                                $this->template_handler->abfinder_import_adaption_html();
+                                break;
+                            case 'export':
+                                $this->template_handler->abfinder_export_adaption_html();
+                                break;
+                            default:
+                                $this->template_handler->abfinder_adaption_list_html();
+                                break;
+                        }
+                    }else{
                         $this->template_handler->abfinder_adaption_list_html();
                     }
                 } else if ('auto-bulb-finder-vehicle' === $_GET['page']) {
@@ -80,17 +96,17 @@ if (!class_exists('ABFinder_Admin_Functions')) {
                                     $this->template_handler->abfinder_add_vehicle_html(intval($_GET['id']));
                                 }
                                 break;
-                            case 'import_vehicles':
+                            case 'import':
                                 $this->template_handler->abfinder_import_vehicle_html();
                                 break;
-                            case 'export_vehicles':
+                            case 'export':
                                 $this->template_handler->abfinder_export_vehicle_html();
                                 break;
                             default:
                                 $this->template_handler->abfinder_vehicle_list_html();
                                 break;
                         }
-                    }else{
+                    } else {
                         $this->template_handler->abfinder_vehicle_list_html();
                     }
                 }
@@ -133,7 +149,6 @@ if (!class_exists('ABFinder_Admin_Functions')) {
         public function abfinder_create_adaption($data)
         {
             if ($data) {
-                global $wpdb;
                 $name             = isset($data['abfinder_adaption_name']) ? sanitize_text_field($data['abfinder_adaption_name']) : '';
                 $size               = isset($data['abfinder_adaption_size']) ? sanitize_text_field($data['abfinder_adaption_size']) : '';
                 $products          = isset($data['abfinder_adaption_products']) ? sanitize_text_field($data['abfinder_adaption_products']) : '';
@@ -178,7 +193,7 @@ if (!class_exists('ABFinder_Admin_Functions')) {
                 }
 
                 $product_check = false;
-                if (isset($data['save_adaption']) && empty($data['aid'])) {
+                if (isset($data['save_adaption']) && empty($data['id'])) {
                     if ($product_check) {
                         $message = esc_html__('Adaption for <b>' . $size . '</b> already exits.', 'auto-bulb-finder');
                         parent::abfinder_set_error_code(1);
@@ -190,7 +205,7 @@ if (!class_exists('ABFinder_Admin_Functions')) {
                     $helper = new ABFinder_Adaptions();
 
                     $fits_ons = explode(',', $fits_on);
-                    
+
                     $fits_ons = array_unique($fits_ons);
 
                     $abfinder_adaption = array(
@@ -201,7 +216,7 @@ if (!class_exists('ABFinder_Admin_Functions')) {
                         'status'   => $status,
                     );
 
-                    if (isset($data['save_adaption']) && empty($_GET['aid'])) {
+                    if (isset($data['save_adaption']) && empty($_GET['id'])) {
                         $result = $helper->abfinder_save_adaption($abfinder_adaption, '');
 
                         if ($result) {
@@ -213,9 +228,9 @@ if (!class_exists('ABFinder_Admin_Functions')) {
                             parent::abfinder_set_error_code(1);
                             parent::abfinder_print_notification($message);
                         }
-                    } elseif (isset($data['update_adaption']) && !empty($_GET['aid'])) {
-                        $aid   = intval($_GET['aid']);
-                        $result = $helper->abfinder_save_adaption($abfinder_adaption, $aid);
+                    } elseif (isset($data['update_adaption']) && !empty($_GET['id'])) {
+                        $id   = intval($_GET['id']);
+                        $result = $helper->abfinder_save_adaption($abfinder_adaption, $id);
 
                         if ($result) {
                             $message = esc_html__('Adaption updated successfully 🎉', 'auto-bulb-finder');
@@ -248,8 +263,14 @@ if (!class_exists('ABFinder_Admin_Functions')) {
                 $bulbsize = isset($data['abfinder_vehicle_bulb_size']) ? sanitize_text_field($data['abfinder_vehicle_bulb_size']) : '';
                 $status              = isset($data['abfinder_status']) ? intval($data['abfinder_status']) : 1;
 
+                if (!empty($year) && !is_numeric($year)) {
+                    $message    = esc_html__('Year must be a number.', 'auto-bulb-finder');
+                    parent::abfinder_set_error_code(1);
+                    parent::abfinder_print_notification($message);
+                }
+
                 if (empty($year)) {
-                    $message    = esc_html__('Adaption name cannot be null.', 'auto-bulb-finder');
+                    $message    = esc_html__('The year of vehicle cannot be null.', 'auto-bulb-finder');
                     parent::abfinder_set_error_code(1);
                     parent::abfinder_print_notification($message);
                 }

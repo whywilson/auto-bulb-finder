@@ -58,3 +58,8 @@ Navigate to Auto Bulb > Vehicles and change the vehicle status to Exclude.
 1. Search vehicle by Year/Make/Model. All devices are supported.
 2. Add adaptions to show products below the bulb size. 
 3. Add custom vehicle data. The vehicles can be included or excluded from the online database. Import or export the vehicle data as CSV file.
+
+== Changelog ==
+= 2.6.0 =
+1. Support Import and Export Adaption Data to CSV file.
+2. Fixed the issue that the plugin cannot be activated on the WordPress 6.0.0 version.
