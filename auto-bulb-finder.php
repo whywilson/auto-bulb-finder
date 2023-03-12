@@ -3,7 +3,7 @@
 Plugin Name: Auto Bulb Finder for WP & WC - Year/Make/Model
 Plugin URI:  https://auto.mtoolstec.com
 Description: Year/Make/Model/BodyType/Qualifer automoive bulb size querying system for vehicles from 1960 to 2022. Online database or custom vehicle list. Add to any page or content by a shortcode <code>[abf]</code>.
-Version:     2.6.0
+Version:     2.6.1
 Author:      MTools Tec
 Author URI:  https://shop.mtoolstec.com/about-us/
 License:     GPL
