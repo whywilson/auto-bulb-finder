@@ -3,9 +3,9 @@ Contributors: mtoolstec
 Tags: Automotive, Auto Bulb, Year Make Model
 Donate link: https://shop.mtoolstec.com/donate
 Requires at least: 6.0
-Tested up to: 6.1.1
+Tested up to: 6.2.1
 Requires PHP: 7.4
-Stable tag: 2.5.2
+Stable tag: 2.6.6
 License: GPL v2
 License URI: https://auto.mtoolstec.com/license
 
@@ -63,3 +63,14 @@ Navigate to Auto Bulb > Vehicles and change the vehicle status to Exclude.
 = 2.6.0 =
 1. Support Import and Export Adaption Data to CSV file.
 2. Fixed the issue that the plugin cannot be activated on the WordPress 6.0.0 version.
+
+= 2.6.2 =
+1. Improve layout of selector on some WordPress theme.
+2. Reduce the size of the plugin.
+
+= 2.6.6 =
+1. Add vehicle statistics on the dashboard.
+2. Add support to WordPress 6.2 version.
+
+= 2.6.8 =
+1. Support adding custom vehicles with submodel, bodytype, and qualifier mixed.

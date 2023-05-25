@@ -175,7 +175,7 @@ class ABFinder_Database
 		$store_query_result['id'] = $store_query_result['key'];
 		$items = array();
 		foreach ($store_query_result['value'] as $item) {
-			$items[$item[$store_query_result['select']]] = [$store_query_result['key'], $item[$store_query_result['select']]];
+			$items[$item[$store_query_result['select']]] = [$store_query_result['key'], $item[$store_query_result['select']], $store_query_result['select']];
 		}
 		$store_query_result['items'] = $items;
 		return $store_query_result;
@@ -221,9 +221,9 @@ class ABFinder_Database
 
 		return $vehicles;
 	}
-
-	public function query_vehicles($query)
+	public function query_vehicles($query, $ip_address)
 	{
+		$ip_address = isset($ip_address) ? $ip_address : "";
 		$store_result = $this->query_local_vehicles($query);
 
 		$country = $query['country'];
@@ -269,29 +269,65 @@ class ABFinder_Database
 			$remote_code = wp_remote_retrieve_response_code($remote_response);
 
 			if ($remote_code != 200) {
+				$query_result['id'] = $store_result['id'];
+				$query_result['key'] =  $store_result['key'];
+				$query_result['select'] =  $store_result['select'];
+				$query_result['defaultText'] =  $store_result['defaultText'];
+				$query_result['items'] =  $store_result['items'];
 				return $query_result;
 			}
+
 			try {
 				$remote_body = wp_remote_retrieve_body($remote_response);
 				$json = json_decode($remote_body, true);
+
+				if($json['id'] == 'none'){
+					$query_result['id'] = $store_result['id'];
+					$query_result['key'] =  $store_result['key'];
+					$query_result['select'] =  $store_result['select'];
+					$query_result['defaultText'] =  $store_result['defaultText'];
+					$query_result['items'] =  $store_result['items'];
+					return $query_result;
+				}
+
 				if ($json['id'] == 'vehicle') {
 					if (array_key_exists('bulb', $json)) {
 						unset($json['bulb']);
 					}
-					$bulbs = $json['items'];
-					$helper = new ABFinder_Adaptions();
-					foreach ($bulbs as $key => $bulb) {
-						$bulbSize = $bulb[0];
-						unset($bulbs[$key]);
-						$productIds = $helper->abfinder_get_adaption_by_size($bulbSize);
 
-						$bulbs[$key] = [
-							'size' => $bulbSize,
-							'products' => $productIds,
-							'html' => do_shortcode('[abf_products ids="' . implode(",", $productIds) . '"]')
-						];
+					//save vehicle to query history with function abfinder_add_vehicle_query_history
+					try {
+						$vid = $json['vid'];
+						$year = $json['year'];
+						$make = $json['make'];
+						$model = $json['model'];
+						$submodel = $json['submodel'];
+						$bodytype = $json['bodytype'];
+						$qualifier = $json['qualifier'];
+						$this->insert_vehicle_query_history($vid, $year, $make, $model, $submodel, $bodytype, $qualifier, $ip_address);
+					} catch (\Throwable $th) {
 					}
-					$json['items'] = $bulbs;
+
+					$bulbs = $json['items'];
+
+					//if bulbs is not empty
+					if (is_array($bulbs) && !empty($bulbs)) {
+						$helper = new ABFinder_Adaptions();
+						foreach ($bulbs as $key => $bulb) {
+							$bulbSize = $bulb[0];
+							unset($bulbs[$key]);
+							$productIds = $helper->abfinder_get_adaption_by_size($bulbSize);
+
+							$bulbs[$key] = [
+								'size' => $bulbSize,
+								'products' => $productIds,
+								'html' => do_shortcode('[abf_products ids="' . implode(",", $productIds) . '"]')
+							];
+						}
+						$json['items'] = $bulbs;
+					}else{
+						$json['items'] = ['bulb' => ['size' => 'No Informations', 'products' => [], 'html' => '']];
+					}
 				} else {
 					$excludeVehicles = $this->get_local_exclude_vehicles($query, $json['select']);
 					foreach ($excludeVehicles as $excludeVehicle) {
@@ -316,10 +352,24 @@ class ABFinder_Database
 						$query_result['items'] = $remote_result_items;
 					}
 				} else {
-					$query_result['items'] = !empty($json['items']) ? $json['items'] : $store_result['items'];
+					if (!empty($store_result['items'])) {
+						$store_result_items = $store_result['items'];
+						$remote_result_items = $json['items'];
+						foreach ($store_result_items as $store_key => $store_item) {
+							if (array_key_exists($store_key, $remote_result_items)) {
+								$remote_result_items[$store_key] = array_merge($remote_result_items[$store_key], $store_item);
+							} else {
+								$remote_result_items[$store_key] = $store_item;
+							}
+						}
+						ksort($remote_result_items);
+						$query_result['items'] = $remote_result_items;
+					} else {
+						$query_result['items'] = $json['items'];
+					}
 				}
 			} catch (\Throwable $th) {
-				$json = ['error' => $th, 'items' => []];
+				$json = ['error' => $th->getMessage() , 'items' => []];
 			}
 
 			$query_result['remote'] = $json;
@@ -524,10 +574,8 @@ class ABFinder_Database
 
 	private function exportAdaptionContent($adaptions)
 	{
-		$csv = $this->getExpectedHeader( 'adaptions-template.csv' ) . "\n";
+		$csv = $this->getExpectedHeader('adaptions-template.csv') . "\n";
 		foreach ($adaptions as $adaption) {
-			// $csv .= $adaption['name']. ',"' . $adaption['size'] . '",' . ($adaption->status == 0 ? 'include' : 'exclude') . "\n";
-			//add name, size, products, fits_on, status
 			$csv .= $adaption['name'] . ',"' . $adaption['size'] . '","' . $adaption['products'] . '","' . $adaption['fits_on'] . '",' . ($adaption['status'] == 0 ? 'include' : 'exclude') . "\n";
 		}
 		return $csv;
@@ -604,7 +652,84 @@ class ABFinder_Database
 		$templateContent = file_get_contents(ABFINDER_PLUGIN_FILE . 'assets/templates/' . $template_name);
 		return $this->getCsvHeader($templateContent);
 	}
-	public function download_template()
+
+	public function abfinder_add_vehicle_query_history($vid, $year, $make, $model, $submodel, $bodytype, $qualifier, $bulb_size)
 	{
+		// $vehicle = $this->abfinder_get_vehicle_query_history($vid);
+		// if ($vehicle) {
+		// 	$this->abfinder_update_vehicle_query_history($vehicle, $vid, $bulb_size);
+		// } else {
+		// 	$this->insert_vehicle_query_history($vid, $year, $make, $model, $submodel, $bodytype, $qualifier, $bulb_size);
+		// }
+
+		return true;
+	}
+
+	public function insert_vehicle_query_history($vid, $year, $make, $model, $submodel, $bodytype, $qualifier, $ip_address)
+	{
+		global $wpdb;
+		$wpdb->insert(
+			$wpdb->prefix . 'abfinder_vehicle_query_history',
+			[
+				'vid' => $vid,
+				'year' => $year,
+				'make' => $make,
+				'model' => $model,
+				'submodel' => $submodel,
+				'bodytype' => $bodytype,
+				'qualifier' => $qualifier,
+				'ip_address' => $ip_address,
+				'time' => current_time('mysql')
+			]
+		);
+	}
+
+	private function abfinder_update_vehicle_query_history($vehicle, $vid)
+	{
+		//update updated_at, count = count + 1
+		global $wpdb;
+		$wpdb->update(
+			$wpdb->prefix . 'abfinder_vehicle_query_history',
+			[
+				'updated_at' => current_time('mysql'),
+				'count' => $vehicle['count'] + 1,
+			],
+			['vid' => $vid]
+		);
+	}
+
+	private function abfinder_get_vehicle_query_history($vid)
+	{
+		global $wpdb;
+		$vehicle = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->prefix}abfinder_vehicle_query_history WHERE vid = %s",
+				$vid
+			),
+			ARRAY_A
+		);
+		return $vehicle;
+	}
+
+	//get top 10 vehicles group by vid and vid is not null and show count(*)
+	public function get_top_vehicles()
+	{
+		global $wpdb;
+		$vehicles = $wpdb->get_results(
+			"SELECT *, count(*) as count FROM {$wpdb->prefix}abfinder_vehicle_query_history WHERE vid IS NOT NULL GROUP BY vid ORDER BY count DESC LIMIT 10",
+			ARRAY_A
+		);
+		return $vehicles;
+	}
+
+	//get vehicle count queried everyday in the last 7 days
+	public function get_vehicle_count_by_day($limit = 7)
+	{
+		global $wpdb;
+		$vehicles = $wpdb->get_results(
+			"SELECT DATE_FORMAT(time, '%Y-%m-%d') as date, count(*) as count FROM {$wpdb->prefix}abfinder_vehicle_query_history GROUP BY date ORDER BY date DESC LIMIT " . $limit,
+			ARRAY_A
+		);
+		return $vehicles;
 	}
 }

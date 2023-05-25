@@ -3,21 +3,12 @@ function abfinder_shortcode_abf($atts = [], $content = null, $tag = '')
 {
     wp_register_style('chosen-css',  ABFINDER_PLUGIN_URL . 'assets/css/chosen.min.css');
     wp_register_script('chosen-js', ABFINDER_PLUGIN_URL . 'assets/js/chosen.jquery.min.js');
-    wp_register_script('abf-app-js', ABFINDER_PLUGIN_URL . 'assets/js/app.js');
     wp_register_style('abf-app-css', ABFINDER_PLUGIN_URL . 'assets/css/app.css');
 
     wp_enqueue_style('abf-app-css');
     wp_enqueue_script('chosen-js');
     wp_enqueue_style('chosen-css');
-    wp_enqueue_script('abf-app-js');
-    wp_enqueue_script('wc-add-to-cart-variation');
-
     $atts = array_change_key_case((array)$atts, CASE_LOWER);
-    $bs_atts = shortcode_atts(
-        ['vid' => '', 'year' => '', 'make' => '', 'model' => '', 'submodel' => '', 'show' => 'true'],
-        $atts,
-        $tag
-    );
 
     ob_start();
     include ABFINDER_PLUGIN_FILE . 'templates/front/class-abfinder-dynamic.php';
@@ -165,4 +156,26 @@ if (!function_exists('is_woocommerce_activated')) {
             return false;
         }
     }
+}
+
+//check options of enable-my-vehicles, if 1, add My Vehicle Tab to my-account page, load templates/front/abfinder-my-vehicles.php on my-account page
+if (get_option('abf_enable_my_vehicles') == 1) {
+    add_action('init', 'abfinder_register_my_vehicles_endpoint');
+    function abfinder_register_my_vehicles_endpoint()
+    {
+        add_rewrite_endpoint('my-vehicles', EP_ROOT | EP_PAGES);
+    }
+    add_filter('woocommerce_account_menu_items', 'abfinder_add_my_vehicles_tab', 40);
+    function abfinder_add_my_vehicles_tab($items)
+    {
+        $items['my-vehicles'] = __('My Vehicles', 'auto-bulb-finder');
+        return $items;
+    }
+
+    function abfinder_my_vehicles_endpoint_content()
+    {
+        include ABFINDER_PLUGIN_FILE . 'templates/front/abfinder-my-vehicles.php';
+    }
+
+    add_action('woocommerce_account_my-vehicles_endpoint', 'abfinder_my_vehicles_endpoint_content');
 }

@@ -139,5 +139,11 @@ if (!class_exists('abfinder_Admin_Templates')) {
         {
             require 'vehicles/abfinder-export-vehicle.php';
         }
+
+        // Statistic html
+        public function abfinder_statistic_html()
+        {
+            require 'statistics/abfinder-statistics.php';
+        }
     }
 }

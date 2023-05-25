@@ -49,7 +49,8 @@ if (!class_exists('ABFinder_Admin_Functions')) {
         {
             add_menu_page('Auto Bulb Finder', 'Auto Bulb', 'manage_options', 'auto-bulb-finder-for-wp-wc', array($this, 'abfinder_config_menu'), ABFINDER_PLUGIN_URL . 'assets/images/lightbulb-fill.svg', 20);
             add_submenu_page('auto-bulb-finder-for-wp-wc', 'Adaptions', 'Adaptions', 'edit_pages', 'auto-bulb-finder-adaption', array($this, 'auto_bulb_finder_adaption_menu'));
-            add_submenu_page('auto-bulb-finder-for-wp-wc', 'Vehicles', 'Vehicles', 'edit_pages', 'auto-bulb-finder-vehicle', array($this, 'auto_bulb_finder_adaption_menu'));
+            add_submenu_page('auto-bulb-finder-for-wp-wc', 'Vehicles', 'Vehicles', 'edit_pages', 'auto-bulb-finder-vehicle', array($this, 'auto_bulb_finder_vehicle_menu'));
+            add_submenu_page('auto-bulb-finder-for-wp-wc', 'Statistics', 'Statistics', 'edit_pages', 'auto-bulb-finder-statistic', array($this, 'auto_bulb_finder_statistic_menu'));
         }
 
         function abfinder_admin_script()
@@ -59,57 +60,78 @@ if (!class_exists('ABFinder_Admin_Functions')) {
 
         public function auto_bulb_finder_adaption_menu()
         {
-            if (isset($_GET['page'])) {
-                if ('auto-bulb-finder-adaption' === $_GET['page']) {
-                    if (isset($_GET['action'])) {
-                        switch ($_GET['action']) {
-                            case 'add':
-                                $this->template_handler->abfinder_add_adaption_html();
-                                break;
-                            case 'edit':
-                                if (isset($_GET['id']) && !empty($_GET['id'])) {
-                                    $id = intval($_GET['id']);
-                                    $this->template_handler->abfinder_add_adaption_html($id);
-                                }
-                                break;
-                            case 'import':
-                                $this->template_handler->abfinder_import_adaption_html();
-                                break;
-                            case 'export':
-                                $this->template_handler->abfinder_export_adaption_html();
-                                break;
-                            default:
-                                $this->template_handler->abfinder_adaption_list_html();
-                                break;
+            if (isset($_GET['action'])) {
+                switch ($_GET['action']) {
+                    case 'add':
+                        $this->template_handler->abfinder_add_adaption_html();
+                        break;
+                    case 'edit':
+                        if (isset($_GET['id']) && !empty($_GET['id'])) {
+                            $id = intval($_GET['id']);
+                            $this->template_handler->abfinder_add_adaption_html($id);
                         }
-                    }else{
+                        break;
+                    case 'import':
+                        $this->template_handler->abfinder_import_adaption_html();
+                        break;
+                    case 'export':
+                        $this->template_handler->abfinder_export_adaption_html();
+                        break;
+                    default:
                         $this->template_handler->abfinder_adaption_list_html();
-                    }
-                } else if ('auto-bulb-finder-vehicle' === $_GET['page']) {
-                    if (isset($_GET['action'])) {
-                        switch ($_GET['action']) {
-                            case 'add':
-                                $this->template_handler->abfinder_add_vehicle_html();
-                                break;
-                            case 'edit':
-                                if (isset($_GET['id']) && !empty($_GET['id'])) {
-                                    $this->template_handler->abfinder_add_vehicle_html(intval($_GET['id']));
-                                }
-                                break;
-                            case 'import':
-                                $this->template_handler->abfinder_import_vehicle_html();
-                                break;
-                            case 'export':
-                                $this->template_handler->abfinder_export_vehicle_html();
-                                break;
-                            default:
-                                $this->template_handler->abfinder_vehicle_list_html();
-                                break;
-                        }
-                    } else {
-                        $this->template_handler->abfinder_vehicle_list_html();
-                    }
+                        break;
                 }
+            } else {
+                $this->template_handler->abfinder_adaption_list_html();
+            }
+        }
+
+        public function auto_bulb_finder_vehicle_menu()
+        {
+            if (isset($_GET['action'])) {
+                switch ($_GET['action']) {
+                    case 'add':
+                        $this->template_handler->abfinder_add_vehicle_html();
+                        break;
+                    case 'edit':
+                        if (isset($_GET['id']) && !empty($_GET['id'])) {
+                            $this->template_handler->abfinder_add_vehicle_html(intval($_GET['id']));
+                        }
+                        break;
+                    case 'import':
+                        $this->template_handler->abfinder_import_vehicle_html();
+                        break;
+                    case 'export':
+                        $this->template_handler->abfinder_export_vehicle_html();
+                        break;
+                    default:
+                        $this->template_handler->abfinder_vehicle_list_html();
+                        break;
+                }
+            } else {
+                $this->template_handler->abfinder_vehicle_list_html();
+            }
+        }
+
+        public function auto_bulb_finder_statistic_menu()
+        {
+            add_action('admin_head', 'abfinder_statistics_add_screen_options');
+            $this->template_handler->abfinder_statistic_html();
+        }
+
+        public function abfinder_statistics_add_screen_options()
+        {
+            //show metabox only on page=auto-bulb-finder-statistic
+            if (isset($_GET['page']) && $_GET['page'] == 'auto-bulb-finder-statistic') {
+                global $auto_bulb_finder_statistic_page;
+                add_screen_option(
+                    'abfinder_statistics_top_vehicle',
+                    array(
+                        'label' => 'Top Vehicles',
+                        'default' => true,
+                        'option' => 'abfinder_statistics_top_vehicle'
+                    )
+                );
             }
         }
 
@@ -119,7 +141,7 @@ if (!class_exists('ABFinder_Admin_Functions')) {
          */
         public function abfinder_config_menu()
         {
-            wp_enqueue_script('abf-settings-js');
+            // wp_enqueue_script('abf-settings-js');
             $this->template_handler->auto_bulb_finder_config_html();
         }
 

@@ -3,7 +3,7 @@
 Plugin Name: Auto Bulb Finder for WP & WC - Year/Make/Model
 Plugin URI:  https://auto.mtoolstec.com
 Description: Year/Make/Model/BodyType/Qualifer automoive bulb size querying system for vehicles from 1960 to 2022. Online database or custom vehicle list. Add to any page or content by a shortcode <code>[abf]</code>.
-Version:     2.6.1
+Version:     2.7.0
 Author:      MTools Tec
 Author URI:  https://shop.mtoolstec.com/about-us/
 License:     GPL
@@ -280,7 +280,6 @@ function abfinder_add_abfinder_ajax_actions()
 }
 
 add_action('init', 'abfinder_add_abfinder_ajax_actions');
-
 function abfinder_ajax_function()
 {
     try {
@@ -309,7 +308,8 @@ function abfinder_ajax_function()
                 $output = $abfinderDb->save_settings($_REQUEST['names'], $_REQUEST['values']);
                 break;
             case 'query_vehicle':
-                $output = $abfinderDb->query_vehicles($_REQUEST['query']);
+                $ip_address = $_SERVER['REMOTE_ADDR'];
+                $output = $abfinderDb->query_vehicles($_REQUEST['query'], $ip_address);
                 break;
             case 'revoke_token':
                 $output = $abfinderDb->revoke_token();

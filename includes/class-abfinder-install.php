@@ -22,13 +22,14 @@ if (!class_exists('ABFinder_Install')) {
          */
         protected $wpdb;
 
-        protected $abfinder_db_version = 2;
+        protected $abfinder_db_version = 3;
         /**
          * Function initialization
          */
         public function init()
         {
             $this->abfinder_create_table();
+            $this->upgrade();
         }
         /**
          * Functions Construct
@@ -43,12 +44,13 @@ if (!class_exists('ABFinder_Install')) {
 
         public function upgrade()
         {
-            $installed_ver = get_option("abfinder_db_version");
-            if ($installed_ver < $this->abfinder_db_version) {
+            $installed_verion = get_option("abfinder_db_version");
+            if ($installed_verion != $this->abfinder_db_version) {
                 $this->abfinder_upgrade_table();
             } else {
                 $this->abfinder_create_table();
             }
+            update_option("abfinder_db_version", $this->abfinder_db_version);
         }
 
         /**
@@ -165,8 +167,23 @@ if (!class_exists('ABFinder_Install')) {
                 `status` boolean DEFAULT 0 NOT NULL,
                 PRIMARY KEY (id)
             ) $charset_collate;";
-
             dbDelta($createAbfVehicleTable);
+
+            $abfinder_vehicle_query_history = $this->wpdb->prefix . 'abfinder_vehicle_query_history';
+            $createAbfVehicleQueryHistoryTable = "CREATE TABLE IF NOT EXISTS $abfinder_vehicle_query_history (
+                `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                `vid` bigint(20) NOT NULL,
+                `year` int(4) NOT NULL,
+                `make` text NOT NULL,
+                `model` text NOT NULL,
+                `submodel` text,
+                `bodytype` text,
+                `qualifier` text,
+                `ip_address` text,
+                `time` datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id)
+            ) $charset_collate;";
+            dbDelta($createAbfVehicleQueryHistoryTable);
 
             update_option('abfinder_db_version', $this->abfinder_db_version);
         }
@@ -178,6 +195,8 @@ if (!class_exists('ABFinder_Install')) {
                 case 1:
                 case 2:
                     $this->abfinder_create_vehicle_table();
+                case 3:
+                    $this->abfinder_create_vehicle_query_history_table();
                 default:
                     break;
             }
@@ -203,6 +222,30 @@ if (!class_exists('ABFinder_Install')) {
 
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';
             dbDelta($createAbfTable);
+        }
+
+        // create vehicle query history table.
+        public function abfinder_create_vehicle_query_history_table()
+        {
+            $charset_collate = $this->wpdb->get_charset_collate();
+            $abfinder_vehicle_query_history = $this->wpdb->prefix . 'abfinder_vehicle_query_history';
+            $createAbfVehicleQueryHistoryTable = "CREATE TABLE IF NOT EXISTS $abfinder_vehicle_query_history (
+                `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                `vid` bigint(20) NOT NULL,
+                `year` int(4) NOT NULL,
+                `make` text NOT NULL,
+                `model` text NOT NULL,
+                `submodel` text,
+                `bodytype` text,
+                `qualifier` text,
+                `bulb_size` text,
+                `ip_address` text,
+                `time` datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id)
+            ) $charset_collate;";
+
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($createAbfVehicleQueryHistoryTable);
         }
     }
 }
