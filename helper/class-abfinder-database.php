@@ -60,6 +60,9 @@ class ABFinder_Database
 					return $this->query_local_vehicles($query);
 				}
 			case 'makeSelect':
+				if (!isset($query['year'])) {
+					return array('id'=> 'modelSelect', 'items'=> [], 'select'=> 'make', 'key'=> 'makeSelect');
+				}
 				$sql = "SELECT DISTINCT make FROM {$this->table_name} WHERE year LIKE '%{$query['year']}%' AND make != '' AND status = 0 ORDER BY make ASC";
 				$result = $this->wpdb->get_results($sql, ARRAY_A);
 				if (!empty($result)) {
@@ -74,6 +77,9 @@ class ABFinder_Database
 				}
 				$query['make'] = '';
 			case 'modelSelect':
+				if(!isset($query['year']) || !isset($query['make'])) {
+					return array('id'=> 'submodelSelect', 'items'=> [], 'select'=> 'model', 'key'=> 'modelSelect');
+				}
 				$sql = "SELECT DISTINCT model FROM {$this->table_name} WHERE year LIKE '%{$query['year']}%' AND make LIKE '%{$query['make']}%' AND model != '' AND status = 0 ORDER BY model ASC";
 				$result = $this->wpdb->get_results($sql, ARRAY_A);
 				if (!empty($result)) {
@@ -88,6 +94,9 @@ class ABFinder_Database
 				}
 				$query['model'] = '';
 			case 'submodelSelect':
+				if(!isset($query['year']) || !isset($query['make']) || !isset($query['model'])) {
+					return array('id'=> 'bodytypeSelect', 'items'=> [], 'select'=> 'submodel', 'key'=> 'submodelSelect');
+				}
 				$sql = "SELECT DISTINCT submodel FROM {$this->table_name} WHERE year LIKE '%{$query['year']}%' AND make LIKE '%{$query['make']}%' AND model LIKE '%{$query['model']}%' AND submodel != '' ORDER BY submodel ASC";
 				$result = $this->wpdb->get_results($sql, ARRAY_A);
 				if (!empty($result)) {
@@ -102,6 +111,9 @@ class ABFinder_Database
 				}
 				$query['submodel'] = '';
 			case 'bodytypeSelect':
+				if(!isset($query['year']) || !isset($query['make']) || !isset($query['model']) || !isset($query['submodel'])) {
+					return array('id'=> 'qualifierSelect', 'items'=> [], 'select'=> 'bodytype', 'key'=> 'bodytypeSelect');
+				}
 				$sql = "SELECT DISTINCT bodytype FROM {$this->table_name} WHERE year LIKE '%{$query['year']}%' AND make LIKE '%{$query['make']}%' AND model LIKE '%{$query['model']}%' AND submodel LIKE '%{$query['submodel']}%' AND bodytype != ''  ORDER BY bodytype ASC";
 				$result = $this->wpdb->get_results($sql, ARRAY_A);
 				if (!empty($result)) {
@@ -118,6 +130,9 @@ class ABFinder_Database
 
 				$query['bodytype'] = '';
 			case 'qualifierSelect':
+				if(!isset($query['year']) || !isset($query['make']) || !isset($query['model']) || !isset($query['submodel']) || !isset($query['bodytype'])) {
+					return array('id'=> 'qualifierSelect', 'items'=> [], 'select'=> 'qualifier', 'key'=> 'qualifierSelect');
+				}
 				$sql = "SELECT DISTINCT qualifier FROM {$this->table_name} WHERE year LIKE '%{$query['year']}%' AND make LIKE '%{$query['make']}%' AND model LIKE '%{$query['model']}%' AND submodel LIKE '%{$query['submodel']}%' AND qualifier LIKE '%{$query['bodytype']}%' AND qualifier != '' AND status = 0 ORDER BY qualifier ASC";
 				$result = $this->wpdb->get_results($sql, ARRAY_A);
 				$store_query_result['value'] = $result;
@@ -131,6 +146,9 @@ class ABFinder_Database
 					return $this->query_local_vehicles($query);
 				}
 			case 'selectVehicle':
+				if(!isset($query['year']) || !isset($query['make']) || !isset($query['model']) || !isset($query['submodel']) || !isset($query['bodytype']) || !isset($query['qualifier'])) {
+					return array('id'=> 'selectVehicle', 'items'=> [], 'select'=> 'selectVehicle', 'key'=> 'selectVehicle', 'defaultText'=> 'Vehicle');
+				}
 				$store_query_result['defaultText'] = 'Vehicle';
 				$sql = "SELECT * FROM {$this->table_name} WHERE year LIKE '%{$query['year']}%' AND make LIKE '%{$query['make']}%' AND model LIKE '%{$query['model']}%' AND submodel LIKE '%{$query['submodel']}%' AND bodytype LIKE '%{$query['bodytype']}%' AND qualifier LIKE '%{$query['qualifier']}%'";
 				$result = $this->wpdb->get_results($sql, ARRAY_A);
@@ -160,7 +178,7 @@ class ABFinder_Database
 						$items[$bulb_position] = [
 							'size' => $bulb_model,
 							'products' => $productIds,
-							'html' => do_shortcode('[products columns="5" ids="' . implode(",", $productIds) . '"]')
+							'html' => do_shortcode('[products how_option_none="true" columns="5" ids="' . implode(",", $productIds) . '"]')
 						];
 					}
 
@@ -239,6 +257,7 @@ class ABFinder_Database
 		$query_result = array();
 		$query_result['query'] = $query;
 		$query_result['store'] = $store_result;
+		$query_result['select'] = '';
 
 		$abf_search_result_priority = get_option("abf_search_result_priority", 0);
 
